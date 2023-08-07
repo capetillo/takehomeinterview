@@ -6,7 +6,7 @@ const DownTime = () => {
         setInputDowntime(event.target.value);
     }; 
 
-    // converting dates to UTC time with js method
+    // converting time to UTC time with js method
     const event = new Date;
     const dateTime = event.toUTCString();
 
