@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import DatePicker, { handleDateChange } from "react-datepicker";
+
 
 const DownTime = () => {
     const [inputDowntime, setInputDowntime] = useState("");
@@ -7,8 +9,9 @@ const DownTime = () => {
     }; 
 
     // converting time to UTC time with js method
-    const event = new Date;
-    const dateTime = event.toUTCString();
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+
 
     return (
     <div className="downtime-form">
@@ -23,7 +26,27 @@ const DownTime = () => {
            onChange={handleInputChange} placeholder="Enter a telescope" />
             <button className="btn">ADD</button>
         </div>
-        <div className="startdate">
+        <DatePicker
+        selected={startDate}
+        onChange={handleDateChange}
+        showTimeSelect
+        dateFormat="Pp"
+            // selected={startDate} 
+            // onChange={(date) => setStartDate(date)}
+            // showTimeSelect
+            // dateFormat="Pp"
+        />
+        <DatePicker
+        selected={endDate}
+        onChange={handleDateChange}
+        showTimeSelect
+        dateFormat="Pp"
+            // selected={endDate} 
+            // onChange={(date) => setEndDate(date)}
+            // showTimeSelect
+            // dateFormat="Pp"
+        />
+        {/* <div className="startdate">
         <input className="input-startdate" type="date" value={inputDowntime}
            onChange={handleInputChange} placeholder="Enter the start date" />
             <button className="btn">ADD</button>
@@ -42,7 +65,7 @@ const DownTime = () => {
         <input className="input-endtime" type="time" value={dateTime}
            onChange={handleInputChange} placeholder="Enter the start date" />
             <button className="btn">ADD</button>
-        </div>
+        </div> */}
         <div className="reason">
         <input className="input" type="text" value={inputDowntime}
            maxLength="255" onChange={handleInputChange} placeholder="Enter a reason. 255" />
