@@ -1,5 +1,5 @@
 `npx create-react-app lco project`
 `npm start`
-`npm i react-bootstrap@next bootstrap@5.1.0 react-router-dom formik yup dayjs`
+`npm i react-bootstrap@next bootstrap@5.1.0 react-router-dom formik yup dayjs uuid`
 If you see "6 high severity vulnerabilities" you can go ahead and ignore them
 https://overreacted.io/npm-audit-broken-by-design/ (written by Dan Abramav, creator of Create React App)
