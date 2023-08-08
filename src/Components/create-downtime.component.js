@@ -29,7 +29,7 @@ const DownTime = () => {
     const endDate = document.getElementById('endDate');
     const reason = document.getElementById('reason'); 
     //add unique id
-
+    const _id = uuidv4();
 
     // functionionality for button to assign value to keys of inputDowntime object
     const onSubmit = downtimeObject => {
