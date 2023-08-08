@@ -13,22 +13,30 @@ dayjs.extend(timezone);
 
 
 const DownTime = () => {
-    // initializing state of inputDowntime to empty string 
-    const [inputDowntime, setInputDowntime] = useState("");
-    // updating the state of inputDowntime any time the value of the input changes
-    const handleInputChange = (event) => {
-        setInputDowntime(event.target.value);
-    }; 
+    // initializes state of inputDowntime to an object with key of the downtime features and the value of an empty string
+    const [inputDowntime, setInputDowntime] = useState({
+        site: '', 
+        telescope: '', 
+        startDate: '', 
+        endDate: '', 
+        reason: ''
+    });
+    
+    // finds each element to be able to assign the value to the keys of inputDowntime object
+    const site = document.getElementById('site');
+    const telescope = document.getElementById('telescope');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const reason = document.getElementById('reason');
 
-    // adding functionality to the button 
-    const [list, setList] = useState([])
-    // runs when add button is clicked to add new downtime
-    const handleAddDowntime = (downtime) => {
-        const newDownTime = {
-            downtime: downtime,
-            // unique id generator 
-            id: uuidv4(),
-        }
+
+    // functionionality for button to assign value to keys of inputDowntime object
+    const onSubmit = downtimeObject => {
+        localStorage.setItem('site', site.val());
+        localStorage.setItem('telescope', telescope.val());
+        localStorage.setItem('startDate', startDate.val());
+        localStorage.setItem('endDate', endDate.val());
+        localStorage.setItem('reason', reason.val());
     }
 
 
@@ -39,42 +47,36 @@ const DownTime = () => {
     // event handler for character limit
     const handleChange = event => {
     setInputText(event.target.value);
-  };
+    }
+
 
     return (
-    <div className="downtime-form">
+    <div className="downtime-form" value={inputDowntime} onSubmit={onSubmit}>
         <h1>Downtimes</h1>
         <div className="site">
-            <input className="input-site" type="text" value={inputDowntime}
-            onChange={handleInputChange} placeholder="Enter a site" />
-            <button className="btn">ADD</button>
+            <input className="input-site" id="site" type="text" 
+            onChange={setInputDowntime} placeholder="Enter a site" />
         </div>
         <div className="telescope">
-            <input className="input-telescope" type="text" value={inputDowntime}
-            onChange={handleInputChange} placeholder="Enter a telescope" />
-            <button className="btn">ADD</button>
+            <input className="input-telescope" id="telescope" type="text" 
+            onChange={setInputDowntime} placeholder="Enter a telescope" />
         </div>
         <DesktopDateTimePicker 
+            id="startDate"
             timezone='UTC'
         />
         <DesktopDateTimePicker 
+            id="endDate"
             timezone='UTC'
         />
 
   <Form>
     <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Control as="textarea"  rows={6} value={inputText} placeholder="Reason" onChange={handleChange} isInvalid={(inputText.length > characterLimit)} />
+        <Form.Control as="textarea" id="reason" rows={6} placeholder="Reason" onChange={handleChange} isInvalid={(inputText.length > characterLimit)} />
         <Badge className='mt-3' bg={`${inputText.length > characterLimit ? 'danger' : 'primary'}`}>{inputText.length}/{characterLimit}</Badge>
         </Form.Group>
     </Form>
-
-
-     
-
-           
-
-
-
+    <button className="btn" onClick={() => setInputDowntime(inputDowntime)}>ADD</button>
     </div>
     );
 };

@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import DownTime from './Components/create-downtime.component';
 import { LocalizationProvider } from '@mui/x-date-pickers';
