@@ -27,7 +27,8 @@ const DownTime = () => {
     const telescope = document.getElementById('telescope');
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');
-    const reason = document.getElementById('reason');
+    const reason = document.getElementById('reason'); 
+    //add unique id
 
 
     // functionionality for button to assign value to keys of inputDowntime object
