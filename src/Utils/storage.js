@@ -1,4 +1,5 @@
-// exporting setData function for utility and reusability purposes
+// exporting functions for reusability 
+
 export function setData(key, value) {
     // fetching existing data or empty array if there's no data 
     const existingData = getData(key) || []; 
@@ -10,10 +11,15 @@ export function setData(key, value) {
 
 
 
-// exporting getData function for utility and reusability purposes
 export function getData(key) {
     // getting data from localStorage (R of CRUD)
    const sValue = localStorage.getItem(key)
    // parsing because sValue is an object 
    return JSON.parse(sValue); 
+}
+
+
+export function deleteData(key) {
+    // deleting data from local storage (D of CRUD)
+    localStorage.removeItem(key);
 }

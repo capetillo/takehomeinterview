@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 // importing getData utility function to avoid using long repetitive functions
-import { getData } from '../Utils/storage';
+import { getData, setData, deleteData } from '../Utils/storage';
 // importing EditDowntime to be able to edit Reason
 import EditDowntime from './edit-downtime.component';
+// importing DeleteDowntime to be able to delete Downtime entry
+import DeleteDowntime from './delete-downtime.component';
 
 const ReadDowntime = () => {
     // using useState hook to keep track of changing values
@@ -27,17 +29,26 @@ const ReadDowntime = () => {
 
 
     
-      const handleUpdateReason = (id, updatedReason) => {
-        const updatedData = downtimeData.map((entry) => {
-          if (entry.id === id) {
-            // 
-            return { ...entry, reason: updatedReason };
-          }
-          return entry;
-        });
-        setDowntimeData(updatedData);
-        setEditId(null);
+    const handleUpdateReason = (id, updatedReason) => {
+    const updatedData = downtimeData.map((entry) => {
+        if (entry.id === id) {
+        // 
+        return { ...entry, reason: updatedReason };
+        }
+        return entry;
+    });
+    setDowntimeData(updatedData);
+    setEditId(null);
     };
+    
+
+    const handleDelete = (id) => {
+        const updatedDeletedData = downtimeData.filter((entry) => entry.id !== id);
+        setDowntimeData(updatedDeletedData);
+        setData('inputDowntime', updatedDeletedData);
+        deleteData('inputDowntime');
+      };
+
 
     return (
         <div>
@@ -66,9 +77,17 @@ const ReadDowntime = () => {
                       onSave={handleUpdateReason}
                     />
                   ) : (
+                    <div>
                     <button onClick={() => handleEdit(entry.id)}>
                       Edit
                     </button>
+                    <DeleteDowntime
+                      id={entry.id}
+                      onDelete={handleDelete}
+                    />
+            
+                    </div>
+                    
                   )}
                 </td>
               </tr>

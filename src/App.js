@@ -9,7 +9,7 @@ function App() {
     <Router>
       <div className="App">
         <nav>
-          <ul>
+          <ul className="nav-ul">
             <li>
               <Link to="/">Read Downtime</Link>
             </li>
