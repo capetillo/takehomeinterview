@@ -102,7 +102,11 @@ const DownTime = () => {
       <form onSubmit={handleSubmit}>
         {/* mapping through each key of inputDowntime object and creating an input field for each key */}
         {Object.keys(inputDowntime).map(key => {
-          if (key === 'startDate' || key === 'endDate') {
+            // skipping rendering of id because it's rendered below in a way that makes more sense
+            if (key === 'id') {
+                return null;
+            }
+            if (key === 'startDate' || key === 'endDate') {
             return (
               <div key={key}>
                 <label htmlFor={key}>{key}</label>
@@ -145,6 +149,11 @@ const DownTime = () => {
             );
             } 
         })}
+         {/* rendering id */}
+        <div>
+            <label>Internal ID:</label>
+            <span>{inputDowntime.id}</span>
+        </div>
         <button type="submit">Submit</button>
       </form>
     </div>
