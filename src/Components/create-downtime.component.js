@@ -1,33 +1,19 @@
 // importing react module and useState hook to keep track of changing values
 import React, { useState } from 'react'; 
-// importing package for uniqueid generator
-import { v4 as uuidv4 } from 'uuid';
 // importing datepicker to have a calendar and time 
 import DatePicker from 'react-datepicker';
 // importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
-// importing setData function to avoid using long repetitive functions
+// importing defaultValue object for cleaner code since it's used more than once in the app
+import  defaultValue  from './DowntimeForm';
+// importing setData function to avoid using long repetitive functions since it's used more than once in the app
 import { setData } from '../storage';
 
-// creating a uniqueID for each downtime
-const _id = uuidv4();
-
-// initializes defaultValue of object where keys are the downtime features and their values are set as an empty string to use in useState below
-// doing this outside of DownTime function so we can access it multiple times without repeating in the return statement
-const defaultValue = {
-    site: '', 
-    telescope: '', 
-    // initializing startDate and endDate to null because if preselected, it can cause errors where startDate and endDate can be the exact same value 
-    startDate: null, 
-    endDate: null, 
-    reason: '',
-    // unique id
-    id: _id
-}
 
 
 const CreateDownTime = () => {
-    
+
+
     // using useState hook to keep track of changing values without mutating object
     const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
@@ -47,7 +33,7 @@ const CreateDownTime = () => {
         const currentDate = new Date();
         if (key === 'startDate') {
         //preventing startDate from being greater than or equal to endDate
-          if (inputDowntime.endDate && date >=inputDowntime.endDate || date > currentDate) {
+          if ((inputDowntime.endDate && date >=inputDowntime.endDate) || date > currentDate) {
             alert("please select a start date before the end date or before the present")
             return
           }
