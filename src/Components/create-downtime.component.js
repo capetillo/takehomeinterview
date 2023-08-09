@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import DatePicker from 'react-datepicker';
 // importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
+// importing setData function to avoid using long repetitive functions
+import { setData } from '../storage';
 
 // creating a uniqueID for each downtime
 const _id = uuidv4();
@@ -75,7 +77,8 @@ const DownTime = () => {
             alert('Please fill out all required fields.');
             return;
         }
-        localStorage.setItem('inputDowntime', JSON.stringify(inputDowntime));
+        // using imported function to setData (C of CRUD)
+        setData('inputDowntime', inputDowntime);
 
         console.log("this is input downtime", inputDowntime);
         const dataToSave = {
