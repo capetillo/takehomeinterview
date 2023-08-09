@@ -1,85 +1,169 @@
+// importing useState 
 import React, { useState } from 'react'; 
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers';
+// importing package for uniqueid generator
 import { v4 as uuidv4 } from 'uuid';
-import Form from 'react-bootstrap/Form'
-import Badge from 'react-bootstrap/Badge'
+// importing datepicker to have a calendar and time 
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-// dayjs plugins to convert time to utc
-dayjs.extend(utc);
-dayjs.extend(timezone);
+// creating a uniqueID for each downtime
+const _id = uuidv4();
+
+// initializes defaultValue of object where keys are the downtime features and their values are set as an empty string to use in useState below
+// doing this outside of DownTime function so we can access it multiple times without repeating in the return statement
+const defaultValue = {
+    site: '', 
+    telescope: '', 
+    // initializing startDate and endDate to null because if preselected, it can cause errors where startDate and endDate can be the exact same value 
+    startDate: null, 
+    endDate: null, 
+    reason: '',
+    // unique id
+    id: _id
+}
 
 
 const DownTime = () => {
-    // initializes state of inputDowntime to an object with key of the downtime features and the value of an empty string
-    const [inputDowntime, setInputDowntime] = useState({
-        site: '', 
-        telescope: '', 
-        startDate: '', 
-        endDate: '', 
-        reason: ''
-    });
     
-    // finds each element to be able to assign the value to the keys of inputDowntime object
-    const site = document.getElementById('site');
-    const telescope = document.getElementById('telescope');
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
-    const reason = document.getElementById('reason'); 
-    //add unique id
-
-
-    // functionionality for button to assign value to keys of inputDowntime object
-    const onSubmit = downtimeObject => {
-        localStorage.setItem('site', site.val());
-        localStorage.setItem('telescope', telescope.val());
-        localStorage.setItem('startDate', startDate.val());
-        localStorage.setItem('endDate', endDate.val());
-        localStorage.setItem('reason', reason.val());
-    }
+    // using useState 
+    const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
 
     //setting limit to 255 characters for reason input below
     const [inputText, setInputText] = useState("");
     const [characterLimit] = useState(255);
 
-    // event handler for character limit
-    const handleChange = event => {
-    setInputText(event.target.value);
+    // event handler to reuse key value pairs 
+    const handleInputChange = (key, value) => {
+        setInputDowntime(prevData =>({
+            // updating state but maintaining inputDowntime immutable 
+            ...prevData,
+            [key]: value
+        }));
     }
 
 
-    return (
-    <div className="downtime-form" value={inputDowntime} onSubmit={onSubmit}>
-        <h1>Downtimes</h1>
-        <div className="site">
-            <input className="input-site" id="site" type="text" 
-            onChange={setInputDowntime} placeholder="Enter a site" />
-        </div>
-        <div className="telescope">
-            <input className="input-telescope" id="telescope" type="text" 
-            onChange={setInputDowntime} placeholder="Enter a telescope" />
-        </div>
-        <DesktopDateTimePicker 
-            id="startDate"
-            timezone='UTC'
-        />
-        <DesktopDateTimePicker 
-            id="endDate"
-            timezone='UTC'
-        />
 
-  <Form>
-    <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Control as="textarea" id="reason" rows={6} placeholder="Reason" onChange={handleChange} isInvalid={(inputText.length > characterLimit)} />
-        <Badge className='mt-3' bg={`${inputText.length > characterLimit ? 'danger' : 'primary'}`}>{inputText.length}/{characterLimit}</Badge>
-        </Form.Group>
-    </Form>
-    <button className="btn" onClick={() => setInputDowntime(inputDowntime)}>ADD</button>
+    // function to handle date input and check the validity of these entries 
+    const handleDateInput = (key, date) => {
+        const currentDate = new Date();
+        if (key === 'startDate') {
+        //preventing startDate from being greater than or equal to endDate
+          if (inputDowntime.endDate && date >=inputDowntime.endDate || date > currentDate) {
+            alert("please select a start date before the end date or before the present")
+            return
+          }
+        } else if (key === 'endDate') {
+          if (date <= inputDowntime.startDate || date > currentDate) {
+            // temporary alert. will add a better one tomorrow
+            alert("please select a time before the present or after start date")
+            return       
+            };
+          }
+          setInputDowntime(prevData => ({
+            ...prevData,
+            [key]: date
+        }));
+      };
+
+
+    // functionionality for button to assign values to keys of inputDowntime object, save da
+     const handleSubmit = e => {
+        e.preventDefault();
+        // checking if any fields are empty
+        const requiredFields = ['site', 'telescope','startDate', 'endDate', 'reason'];
+        // using some method to test if there is a null field in the inputDowntime obj
+        const isAnyFieldEmpty = requiredFields.some(field => !inputDowntime[field]);
+        if (isAnyFieldEmpty) {
+            //temporary alert. will add a better solution 
+            alert('Please fill out all required fields.');
+            return;
+        }
+        localStorage.setItem('inputDowntime', JSON.stringify(inputDowntime));
+
+        console.log("this is input downtime", inputDowntime);
+        const dataToSave = {
+            ...inputDowntime,
+            // converting time to UTC
+            startDate: inputDowntime.startDate.toISOString(),
+            endDate: inputDowntime.endDate.toISOString(),
+          };
+    };
+
+
+
+    /* for this return statement, I'm choosing to use individual conditional rendering because this is a simple form
+    and using specific rendering allows for more control.
+    source: https://react.dev/learn/conditional-rendering
+    if this were a larger form that had multiple fields and more data to handle, having a configuration object would be a better approach
+    because it would be scalable, it would have consistent patterns for the rendering fields, 
+    and the return statement would be more concise and easier to read.
+
+     */
+    return (
+    <div>
+    {/* onSubmit, inputDowntime object is stored by using localStorage */}
+      <form onSubmit={handleSubmit}>
+        {/* mapping through each key of inputDowntime object and creating an input field for each key */}
+        {Object.keys(inputDowntime).map(key => {
+            // skipping rendering of id because it's rendered below in a way that makes more sense
+            if (key === 'id') {
+                return null;
+            }
+            if (key === 'startDate' || key === 'endDate') {
+            return (
+              <div key={key}>
+                <label htmlFor={key}>{key}</label>
+                <DatePicker
+                  selected={inputDowntime[key]}
+                  onChange={date => handleDateInput(key, date)}
+                  showTimeSelect
+                  timeIntervals={1}
+                  dateFormat="MM/dd/yyyy h:mm aa"
+                  className="date-picker"
+                />
+              </div>
+            );
+            } else if (key === 'reason') {
+                return (
+                  <div key={key}>
+                    <label htmlFor={key}>Reason</label>
+                    <textarea
+                      id={key}
+                      name={key}
+                      value={inputDowntime[key]}
+                      onChange={e => handleInputChange(key, e.target.value)}
+                      maxLength={255}
+                    />
+                    <p>Characters remaining: {255 - inputDowntime[key].length}</p>
+                  </div>
+                );
+          } else {
+            return (
+              <div key={key}>
+                <label htmlFor={key}>{key}</label>
+                <input
+                  type="text"
+                  id={key}
+                  name={key}
+                  value={inputDowntime[key]}
+                  onChange={e => handleInputChange(key, e.target.value)}
+                />
+              </div>
+            );
+            } 
+        })}
+         {/* rendering id */}
+        <div>
+            <label>Internal ID:</label>
+            <span>{inputDowntime.id}</span>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
     </div>
-    );
+  );
 };
 
 export default DownTime; 
+
+
