@@ -1,4 +1,4 @@
-// importing useState 
+// importing react module and useState hook to keep track of changing values
 import React, { useState } from 'react'; 
 // importing package for uniqueid generator
 import { v4 as uuidv4 } from 'uuid';
@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 // importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
 // importing setData function to avoid using long repetitive functions
-import { setData } from '../storage.js';
+import { setData } from '../storage';
 
 // creating a uniqueID for each downtime
 const _id = uuidv4();
@@ -26,9 +26,9 @@ const defaultValue = {
 }
 
 
-const DownTime = () => {
+const CreateDownTime = () => {
     
-    // using useState 
+    // using useState hook to keep track of changing values without mutating object
     const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
     // event handler to reuse key value pairs 
@@ -164,6 +164,6 @@ const DownTime = () => {
   );
 };
 
-export default DownTime; 
+export default CreateDownTime; 
 
 

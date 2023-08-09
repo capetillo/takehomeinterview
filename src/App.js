@@ -1,5 +1,5 @@
 import './App.css';
-import DownTime from './Components/create-downtime.component';
+import CreateDownTime from './Components/create-downtime.component';
 
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
 
     <div className="App">
       <header className="App-header">
-        <DownTime/>
+        <CreateDownTime/>
       </header>
     </div>
 
