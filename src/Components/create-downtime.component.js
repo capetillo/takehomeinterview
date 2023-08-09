@@ -29,11 +29,6 @@ const DownTime = () => {
     // using useState 
     const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
-
-    //setting limit to 255 characters for reason input below
-    const [inputText, setInputText] = useState("");
-    const [characterLimit] = useState(255);
-
     // event handler to reuse key value pairs 
     const handleInputChange = (key, value) => {
         setInputDowntime(prevData =>({
@@ -110,6 +105,7 @@ const DownTime = () => {
             if (key === 'id') {
                 return null;
             }
+            // if the key is startDate or endDate, render DatePicker
             if (key === 'startDate' || key === 'endDate') {
             return (
               <div key={key}>
@@ -118,6 +114,7 @@ const DownTime = () => {
                   selected={inputDowntime[key]}
                   onChange={date => handleDateInput(key, date)}
                   showTimeSelect
+                  // time comes in intervals of 1 minute instead of 5 minutes (default)
                   timeIntervals={1}
                   dateFormat="MM/dd/yyyy h:mm aa"
                   className="date-picker"
