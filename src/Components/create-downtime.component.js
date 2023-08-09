@@ -7,7 +7,7 @@ import DatePicker from 'react-datepicker';
 // importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
 // importing setData function to avoid using long repetitive functions
-import { setData } from '../storage';
+import { setData } from '../storage.js';
 
 // creating a uniqueID for each downtime
 const _id = uuidv4();
