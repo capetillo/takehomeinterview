@@ -11,8 +11,10 @@ const ReadDowntime = () => {
     useEffect(() => {
         // using getData utility function 
         const savedData =  getData('inputDowntime') || [];
+        // updating downtimeData state
         setDowntimeData(savedData);
         console.log("this is saved data!", savedData);
+        // empty array simulates behavior of componentDidMount
     }, []);
 
     return (
