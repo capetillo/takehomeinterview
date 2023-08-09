@@ -15,27 +15,32 @@ const ReadDowntime = () => {
         console.log("this is saved data!", savedData);
     }, []);
 
-return (
-    <div>
-        <h1>Downtime Data</h1>
-        {downtimeData.length > 0 ? (
-        <ul>
-            {Object.keys(downtimeData).map(key => (
-            <li key={key}>
-                <label htmlFor={key}>{key}</label>
-                <input
-                type="text"
-                id={key}
-                name={key}
-                value={downtimeData[key]}
-                />
-            </li>
+    return (
+        <div>
+            <h1>Downtimes</h1>
+            {downtimeData.length > 0 ? (
+            <table>
+          <thead>
+            <tr>
+              {Object.keys(downtimeData[0]).map(key => (
+                <th key={key}>{key}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {downtimeData.map((entry, index) => (
+              <tr key={index}>
+                {Object.keys(entry).map(key => (
+                  <td key={key}>{entry[key]}</td>
+                ))}
+              </tr>
             ))}
-        </ul>
-        ) : (
-        <p>No downtime data available.</p>
-        )}
-    </div>
+          </tbody>
+        </table>
+            ) : (
+            <p>No downtime data available.</p>
+            )}
+        </div>
     );
 };
 
