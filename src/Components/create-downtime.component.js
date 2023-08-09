@@ -1,5 +1,8 @@
+// importing useState 
 import React, { useState } from 'react'; 
+// importing package for uniqueid generator
 import { v4 as uuidv4 } from 'uuid';
+// importing datepicker to have a calendar and time 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
