@@ -1,16 +1,7 @@
 import React, { useState } from 'react'; 
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-import { DesktopDateTimePicker } from '@mui/x-date-pickers';
 import { v4 as uuidv4 } from 'uuid';
-import Form from 'react-bootstrap/Form'
-import Badge from 'react-bootstrap/Badge'
-
-// dayjs plugins to convert time to utc
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // creating a uniqueID for each downtime
 const _id = uuidv4();
@@ -28,6 +19,8 @@ const defaultValue = {
 
 
 const DownTime = () => {
+    
+    // using useState 
     const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
 
@@ -35,7 +28,7 @@ const DownTime = () => {
     const [inputText, setInputText] = useState("");
     const [characterLimit] = useState(255);
 
-    // event handler for character limit
+    // event handler to reuse key value pairs 
     const handleInputChange = (key, value) => {
         setInputDowntime(prevData =>({
             ...prevData,
@@ -43,47 +36,88 @@ const DownTime = () => {
         }));
     }
 
-     // functionionality for button to assign value to keys of inputDowntime object
+
+
+    // functionality to check that startDate is before endDate and endDate is before the present 
+    // passing key and date as args. Key is the key of either startDate or endDate and date is the date and time 
+    // that are  selected in the return statement's input 
+    const handleDateInput = (key, date) => {
+        if (key === 'startDate') {
+          if (date < inputDowntime.endDate) {
+            setInputDowntime(prevData => ({
+              ...prevData,
+              startDate: date,
+            }));
+          }
+        } else if (key === 'endDate') {
+          const currentDate = new Date();
+          if (date > inputDowntime.startDate && date < currentDate) {
+            setInputDowntime(prevData => ({
+              ...prevData,
+              endDate: date,
+            }));
+          }
+        }
+      };
+
+
+    // functionionality for button to assign values to keys of inputDowntime object, save da
      const handleSubmit = e => {
         e.preventDefault();
         localStorage.setItem('inputDowntime', JSON.stringify(inputDowntime));
         console.log("this is input downtime", inputDowntime);
+        const dataToSave = {
+            ...inputDowntime,
+            // converting time to UTC
+            startDate: inputDowntime.startDate.toISOString(),
+            endDate: inputDowntime.endDate.toISOString(),
+          };
     };
 
 
-    return (
 
-            <div>
-                {/* onSubmit, inputDowntime object is stored by using localStorage */}
-              <form onSubmit={handleSubmit}>
-                {/* mapping through each key of inputDowntime object and creating an input field for each key */}
-                {Object.keys(inputDowntime).map(key => (
-                  <div key={key}>
-                    <label htmlFor={key}>{key}</label>
-                    <input
-                      type="text"
-                      id={key}
-                      name={key}
-                      value={inputDowntime[key]}
-                      onChange={e => handleInputChange(key, e.target.value)}
-                    />
-                  </div>
-                ))}
-                <button type="submit">Submit</button>
 
-        <DesktopDateTimePicker 
-            id="startDate"
-            timezone='UTC'
-        />
-        <DesktopDateTimePicker 
-            id="endDate"
-            timezone='UTC'
-        />
-              </form>
-              
-            </div>
-          );
+        return (
+    <div>
+    {/* onSubmit, inputDowntime object is stored by using localStorage */}
+      <form onSubmit={handleSubmit}>
+        {/* mapping through each key of inputDowntime object and creating an input field for each key */}
+        {Object.keys(inputDowntime).map(key => {
+          if (key === 'startDate' || key === 'endDate') {
+            return (
+              <div key={key}>
+                <label htmlFor={key}>{key}</label>
+                <DatePicker
+                  selected={inputDowntime[key]}
+                  onChange={date => handleDateInput(key, date)}
+                  showTimeSelect
+                  timeIntervals={1}
+                  dateFormat="MM/dd/yyyy h:mm aa"
+                  className="date-picker"
+                />
+              </div>
+            );
+          } else {
+            return (
+              <div key={key}>
+                <label htmlFor={key}>{key}</label>
+                <input
+                  type="text"
+                  id={key}
+                  name={key}
+                  value={inputDowntime[key]}
+                  onChange={e => handleInputChange(key, e.target.value)}
+                />
+              </div>
+            );
+          }
+        })}
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
 };
+
 
 export default DownTime; 
 
