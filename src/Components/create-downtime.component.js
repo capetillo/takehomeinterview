@@ -7,7 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 // importing defaultValue object for cleaner code since it's used more than once in the app
 import  defaultValue  from './DowntimeForm';
 // importing setData function to avoid using long repetitive functions since it's used more than once in the app
-import { setData } from '../storage';
+import { setData } from '../Utils/storage';
 
 
 

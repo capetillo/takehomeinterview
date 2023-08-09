@@ -1,15 +1,15 @@
 // importing react module, useState hook to keep track of changing values, and useEffect hook to fetch data and update the dom
 import React, { useState, useEffect } from 'react';
 // importing getData utility function to avoid using long repetitive functions
-import { getData } from '../storage';
-// importing defaultValue object to access key value pairs
-import defaultValue from './DowntimeForm';
+import { getData } from '../Utils/storage';
 
 const ReadDowntime = () => {
-
+    // using useState hook to keep track of changing values
     const [downtimeData, setDowntimeData] = useState([]);
   
+    // using useEffect hook to update the dom and fetch data
     useEffect(() => {
+        // using getData utility function 
         const savedData =  getData('inputDowntime') || [];
         setDowntimeData(savedData);
         console.log("this is saved data!", savedData);
