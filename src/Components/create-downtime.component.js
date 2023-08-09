@@ -11,8 +11,9 @@ const _id = uuidv4();
 const defaultValue = {
     site: '', 
     telescope: '', 
-    startDate: new Date(), 
-    endDate: new Date(), 
+    // initializing startDate and endDate to null because if preselected, it can cause errors where startDate and endDate can be the exact same value 
+    startDate: null, 
+    endDate: null, 
     reason: '',
     id: _id
 }
@@ -31,6 +32,7 @@ const DownTime = () => {
     // event handler to reuse key value pairs 
     const handleInputChange = (key, value) => {
         setInputDowntime(prevData =>({
+            // updating state but maintaining inputDowntime immutable 
             ...prevData,
             [key]: value
         }));
@@ -38,33 +40,43 @@ const DownTime = () => {
 
 
 
-    // functionality to check that startDate is before endDate and endDate is before the present 
-    // passing key and date as args. Key is the key of either startDate or endDate and date is the date and time 
-    // that are  selected in the return statement's input 
+    // function to handle date input and check the validity of these entries 
     const handleDateInput = (key, date) => {
+        const currentDate = new Date();
         if (key === 'startDate') {
-          if (date < inputDowntime.endDate) {
-            setInputDowntime(prevData => ({
-              ...prevData,
-              startDate: date,
-            }));
+        //preventing startDate from being greater than or equal to endDate
+          if (inputDowntime.endDate && date >=inputDowntime.endDate || date > currentDate) {
+            alert("please select a start date before the end date or before the present")
+            return
           }
         } else if (key === 'endDate') {
-          const currentDate = new Date();
-          if (date > inputDowntime.startDate && date < currentDate) {
-            setInputDowntime(prevData => ({
-              ...prevData,
-              endDate: date,
-            }));
+          if (date <= inputDowntime.startDate || date > currentDate) {
+            // temporary alert. will add a better one tomorrow
+            alert("please select a time before the present or after start date")
+            return       
+            };
           }
-        }
+          setInputDowntime(prevData => ({
+            ...prevData,
+            [key]: date
+        }));
       };
 
 
     // functionionality for button to assign values to keys of inputDowntime object, save da
      const handleSubmit = e => {
         e.preventDefault();
+        // checking if any fields are empty
+        const requiredFields = ['site', 'telescope','startDate', 'endDate', 'reason'];
+        // using some method to test if there is a null field in the inputDowntime obj
+        const isAnyFieldEmpty = requiredFields.some(field => !inputDowntime[field]);
+        if (isAnyFieldEmpty) {
+            //temporary alert. will add a better solution 
+            alert('Please fill out all required fields.');
+            return;
+        }
         localStorage.setItem('inputDowntime', JSON.stringify(inputDowntime));
+
         console.log("this is input downtime", inputDowntime);
         const dataToSave = {
             ...inputDowntime,
@@ -131,14 +143,13 @@ const DownTime = () => {
                 />
               </div>
             );
-          }
+            } 
         })}
         <button type="submit">Submit</button>
       </form>
     </div>
   );
 };
-
 
 export default DownTime; 
 
