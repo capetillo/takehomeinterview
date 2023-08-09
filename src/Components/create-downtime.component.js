@@ -8,12 +8,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import  defaultValue  from './DowntimeForm';
 // importing setData function to avoid using long repetitive functions since it's used more than once in the app
 import { setData } from '../Utils/storage';
+// importing useNavigate to redirect
+import { useNavigate } from 'react-router-dom';
 
 
 
 const CreateDownTime = () => {
 
-
+    // for redirecting after submission
+    const navigate = useNavigate();
     // using useState hook to keep track of changing values without mutating object
     const [inputDowntime, setInputDowntime] = useState(defaultValue)
 
@@ -27,17 +30,17 @@ const CreateDownTime = () => {
     }
 
 
-
     // function to handle date input and check the validity of these entries 
     const handleDateInput = (key, date) => {
         const currentDate = new Date();
         if (key === 'startDate') {
-        //preventing startDate from being greater than or equal to endDate
+        //preventing startDate from being greater than or equal to endDate || preventing date from being greater than the present
           if ((inputDowntime.endDate && date >=inputDowntime.endDate) || date > currentDate) {
             alert("please select a start date before the end date or before the present")
             return
           }
         } else if (key === 'endDate') {
+        // preventing startDate from being greater than today || preventing date from being greater than the present
           if (date <= inputDowntime.startDate || date > currentDate) {
             // temporary alert. will add a better one tomorrow
             alert("please select a time before the present or after start date")
@@ -73,6 +76,8 @@ const CreateDownTime = () => {
             startDate: inputDowntime.startDate.toISOString(),
             endDate: inputDowntime.endDate.toISOString(),
           };
+        // redirecting to home page after submitting
+        navigate('/read-downtime')
     };
 
 

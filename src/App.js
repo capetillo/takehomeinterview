@@ -19,7 +19,7 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<ReadDowntime />} />
+          <Route path="/read-downtime" element={<ReadDowntime />} />
           <Route path="/create-downtime" element={<CreateDowntime />} />
         </Routes>
       </div>
