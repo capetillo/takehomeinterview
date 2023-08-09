@@ -78,9 +78,11 @@ const DownTime = () => {
 
     /* for this return statement, I'm choosing to use individual conditional rendering because this is a simple form
     and using specific rendering allows for more control.
-    if this were a larger form that had multiple fields and more data to handle, configuration object would be a better approach
+    source: https://react.dev/learn/conditional-rendering
+    if this were a larger form that had multiple fields and more data to handle, having a configuration object would be a better approach
     because it would be scalable, it would have consistent patterns for the rendering fields, 
     and the return statement would be more concise and easier to read.
+
      */
     return (
     <div>
