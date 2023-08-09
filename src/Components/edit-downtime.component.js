@@ -14,7 +14,9 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
     setEditedReason(e.target.value);
   };
 
+
   const handleSave = () => {
+    // calling onSave function passing id and editedReason as args
     onSave(id, editedReason);
   };
 

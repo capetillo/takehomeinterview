@@ -24,20 +24,26 @@ const ReadDowntime = () => {
 
 
     const handleEdit = (id) => {
+        // calling setEditId function and passing the id as an arg
         setEditId(id);
       };
 
 
     
     const handleUpdateReason = (id, updatedReason) => {
+    // mapping through downtimeData array to create new array
     const updatedData = downtimeData.map((entry) => {
+        // checking to see if current entry id is the same as the provided id
         if (entry.id === id) {
-        // 
+        // creating new object with updated reason
         return { ...entry, reason: updatedReason };
         }
+        // if id doesn't match, the same entry will be returned
         return entry;
     });
+    // update downtime state to the new array with updated data
     setDowntimeData(updatedData);
+    // resetting editId state to null
     setEditId(null);
     };
     
@@ -46,7 +52,7 @@ const ReadDowntime = () => {
         const updatedDeletedData = downtimeData.filter((entry) => entry.id !== id);
         setDowntimeData(updatedDeletedData);
         setData('inputDowntime', updatedDeletedData);
-        deleteData('inputDowntime');
+        deleteData(id);
       };
 
 
@@ -64,35 +70,36 @@ const ReadDowntime = () => {
             </tr>
           </thead>
           <tbody>
-            {downtimeData.map((entry, index) => (
-              <tr key={index}>
-                {Object.keys(entry).map(key => (
-                  <td key={key}>{entry[key]}</td>
-                ))}
-                <td>
-                  {editId === entry.id ? (
-                    <EditDowntime
-                      id={entry.id}
-                      initialReason={entry.reason}
-                      onSave={handleUpdateReason}
-                    />
-                  ) : (
-                    <div>
-                    <button onClick={() => handleEdit(entry.id)}>
-                      Edit
-                    </button>
-                    <DeleteDowntime
-                      id={entry.id}
-                      onDelete={handleDelete}
-                    />
-            
-                    </div>
-                    
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {downtimeData.map((entry, index) => (
+    <tr key={index}>
+      {Object.keys(entry).map(key => (
+        <td key={key}>
+          {key === 'id' ? (
+            entry.id
+          ) : (
+            typeof entry[key] === 'object' ? JSON.stringify(entry[key]) : entry[key]
+          )}
+        </td>
+      ))}
+      <td>
+        {editId === entry.id ? (
+
+          <EditDowntime
+            id={entry.id}
+            initialReason={entry.reason}
+            onSave={handleUpdateReason}
+          />
+        ) : (
+          <div>
+            <button onClick={() => handleEdit(entry.id)}>Edit</button>
+            <DeleteDowntime id={entry.id} onDelete={handleDelete} />
+          </div>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
             ) : (
             <p>No downtime data available.</p>

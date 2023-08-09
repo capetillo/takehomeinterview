@@ -5,6 +5,7 @@ import React from 'react';
 const DeleteDowntime = ({ id, onDelete }) => {
 // handler function that deletes downtime entry by finding id 
   const handleDelete = () => {
+    console.log("this is id", id)
     onDelete(id);
   };
 

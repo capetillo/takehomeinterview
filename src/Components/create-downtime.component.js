@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 // importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
-// importing defaultValue object for cleaner code since it's used more than once in the app
-import  defaultValue  from './DowntimeForm';
+// importing package for uniqueid generator
+import { v4 as uuidv4 } from 'uuid';
 // importing setData function to avoid using long repetitive functions since it's used more than once in the app
 import { setData } from '../Utils/storage';
 // importing useNavigate to redirect
@@ -14,6 +14,22 @@ import { useNavigate } from 'react-router-dom';
 
 
 const CreateDownTime = () => {
+
+    // creating a uniqueID for each downtime
+    const _id = uuidv4();
+    // initializes defaultValue of object where the keys are the downtime features and their values are set to empty strings and null 
+    const defaultValue = {
+        site: '', 
+        telescope: '', 
+        // initializing startDate and endDate to null because if preselected, it can create erroneous data
+        // where startDate and endDate can be the exact same value 
+        startDate: null, 
+        endDate: null,
+        reason: '',
+        // unique id
+        id: _id
+    }   
+
 
     // for redirecting after submission
     const navigate = useNavigate();
