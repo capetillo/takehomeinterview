@@ -18,6 +18,7 @@ const defaultValue = {
     startDate: null, 
     endDate: null, 
     reason: '',
+    // unique id
     id: _id
 }
 
