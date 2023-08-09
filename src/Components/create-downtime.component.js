@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 // importing datepicker to have a calendar and time 
 import DatePicker from 'react-datepicker';
+// importing css for datepicker to look like a calendar 
 import 'react-datepicker/dist/react-datepicker.css';
 
 // creating a uniqueID for each downtime
@@ -92,13 +93,12 @@ const DownTime = () => {
 
 
 
-    /* for this return statement, I'm choosing to use individual conditional rendering because this is a simple form
+    /* for the return statement, I'm choosing to use individual conditional rendering because this project is a simple form
     and using specific rendering allows for more control.
     source: https://react.dev/learn/conditional-rendering
-    if this were a larger form that had multiple fields and more data to handle, having a configuration object would be a better approach
-    because it would be scalable, it would have consistent patterns for the rendering fields, 
+    if this were a larger form that had multiple fields and more data to handle, having a configuration object outside of the return 
+    would be a better approach because it would be scalable, it would have consistent patterns for the rendering fields, 
     and the return statement would be more concise and easier to read.
-
      */
     return (
     <div>
