@@ -76,8 +76,13 @@ const DownTime = () => {
 
 
 
-
-        return (
+    /* for this return statement, I'm choosing to use individual conditional rendering because this is a simple form
+    and using specific rendering allows for more control.
+    if this were a larger form that had multiple fields and more data to handle, configuration object would be a better approach
+    because it would be scalable, it would have consistent patterns for the rendering fields, 
+    and the return statement would be more concise and easier to read.
+     */
+    return (
     <div>
     {/* onSubmit, inputDowntime object is stored by using localStorage */}
       <form onSubmit={handleSubmit}>
@@ -97,6 +102,20 @@ const DownTime = () => {
                 />
               </div>
             );
+            } else if (key === 'reason') {
+                return (
+                  <div key={key}>
+                    <label htmlFor={key}>Reason</label>
+                    <textarea
+                      id={key}
+                      name={key}
+                      value={inputDowntime[key]}
+                      onChange={e => handleInputChange(key, e.target.value)}
+                      maxLength={255}
+                    />
+                    <p>Characters remaining: {255 - inputDowntime[key].length}</p>
+                  </div>
+                );
           } else {
             return (
               <div key={key}>
