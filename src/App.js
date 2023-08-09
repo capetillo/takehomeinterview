@@ -11,8 +11,8 @@ function App() {
         <DownTime/>
       </header>
     </div>
-    </LocalizationProvider>
-  );
+     </LocalizationProvider>
+  )
 }
 
 export default App;
