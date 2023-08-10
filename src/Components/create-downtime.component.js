@@ -248,5 +248,3 @@ const CreateDownTime = () => {
 };
 
 export default CreateDownTime;
-
-

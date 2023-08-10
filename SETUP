@@ -1,3 +1,4 @@
+
 # Telescope Downtime Tracker - Setup
 
 This document provides a step-by-step guide to setting up the Telescope Downtime Tracker application on your local machine.
@@ -14,5 +15,3 @@ This document provides a step-by-step guide to setting up the Telescope Downtime
 - npm install
 - npm i uuidv4 react-datepicker vis-timeline vis-data react-router-dom
 
-If you see "6 high severity vulnerabilities" you can go ahead and ignore them
-https://overreacted.io/npm-audit-broken-by-design/ (written by Dan Abramav, creator of Create React App)
