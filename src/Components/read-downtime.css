@@ -1,0 +1,12 @@
+h1 {
+    text-align: center;
+    font-size: 50px;
+}
+
+.search-bar {
+    text-align: center;
+    width: 60%;
+    outline:none;   
+    margin-left: 20%
+
+}

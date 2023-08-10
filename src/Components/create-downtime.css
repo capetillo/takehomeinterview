@@ -1,0 +1,25 @@
+.create-dt {
+  align-items: center;
+  text-align: center;
+  margin: auto;
+}
+
+.date-picker {
+    color: black;
+    background-color: white;
+}
+
+.react-datepicker__time-list {
+    width: 100%;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+    overflow-y: auto;
+  }
+  
+  .react-datepicker__time-list-item {
+    width: 100%;
+    display: block;
+    padding: 5px 10px;
+    clear: both;
+  }
