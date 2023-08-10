@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // importing utility function to avoid repetition
-import { getData, setData } from "../Utils/storage";
+import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
 // importing components
 import EditDowntime from "./edit-downtime.component";
 import DeleteDowntime from "./delete-downtime.component";
@@ -16,7 +16,7 @@ const ReadDowntime = () => {
   // performing side effects (this is what the hook does)
   useEffect(() => {
     // fetching data from local storage
-    const savedData = getData("inputDowntime") || [];
+    const savedData = retrieveDowntimeData("inputDowntime") || [];
     console.log("Retrieved data from local storage:", savedData);
     // setting the state of downtimeData with the data retrieved from local storage
     setDowntimeData(savedData);
@@ -31,7 +31,7 @@ const ReadDowntime = () => {
   // handler function to update specific reason based on id
   const handleUpdateReason = (id, updatedReason) => {
     // fetching current data
-    const currentData = getData("inputDowntime") || [];
+    const currentData = retrieveDowntimeData("inputDowntime") || [];
     // updating the array by mapping
     const updatedData = currentData.map((entry) => {
       if (entry.id === id) {
@@ -41,7 +41,7 @@ const ReadDowntime = () => {
       } else return entry;
     });
     // saving updated data
-    setData("inputDowntime", updatedData);
+    storeDowntimeData("inputDowntime", updatedData);
     // updating state so UI rerenders
     setDowntimeData(updatedData);
     // resetting the id to null so that the entry is not being edited anymore
@@ -51,11 +51,11 @@ const ReadDowntime = () => {
   // deleting specific entry based on id
   const handleEntryDelete = (id) => {
     // fetching current data
-    const currentData = getData("inputDowntime") || [];
+    const currentData = retrieveDowntimeData("inputDowntime") || [];
     // filtering out the entry based on id
     const updatedData = currentData.filter((entry) => entry.id !== id);
     // saving the filtered data
-    setData("inputDowntime", updatedData);
+    storeDowntimeData("inputDowntime", updatedData);
     // updating the state so UI rerenders
     setDowntimeData(updatedData);
   };

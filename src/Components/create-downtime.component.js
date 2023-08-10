@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 // importing package for uniqueid generator
 import { v4 as uuidv4 } from "uuid";
 // importing utils functions
-import { setData, getData } from "../Utils/storage";
+import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
 
 const CreateDownTime = () => {
@@ -93,7 +93,7 @@ const CreateDownTime = () => {
     }
     const doesDowntimeOverlap = (newStart, newEnd, telescope, site) => {
       // fetching all downtimes for the given telescope and site
-      const storedDowntimes = getData("inputDowntime").filter(
+      const storedDowntimes = retrieveDowntimeData("inputDowntime").filter(
         (entry) =>
           entry.telescope.toLowerCase() === telescope.toLowerCase() &&
           entry.site.toLowerCase() === site.toLowerCase()
@@ -127,8 +127,8 @@ const CreateDownTime = () => {
     } else {
       setError("");
     }
-    // using imported function to setData
-    const existingData = getData("inputDowntime") || [];
+    // using imported function to storeDowntimeData
+    const existingData = retrieveDowntimeData("inputDowntime") || [];
     const dataToSave = {
       ...inputDowntime,
       startDate: inputDowntime.startDate.toISOString(),
@@ -136,7 +136,7 @@ const CreateDownTime = () => {
     };
 
     existingData.push(dataToSave);
-    setData("inputDowntime", existingData);
+    storeDowntimeData("inputDowntime", existingData);
     navigate("/read-downtime");
   };
 
