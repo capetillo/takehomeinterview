@@ -10,6 +10,8 @@ const ReadDowntime = () => {
   const [downtimeData, setDowntimeData] = useState([]);
   // initializing editId to null since no reason has been edited
   const [editId, setEditId] = useState(null);
+  // state to expand reason. Initializing to null
+  const [expandedId, setExpandedId] = useState(null);
 
   // performing side effects (this is what the hook does)
   useEffect(() => {
@@ -76,11 +78,33 @@ const ReadDowntime = () => {
               <tr key={index}>
                 {Object.keys(entry).map((key) => (
                   <td key={key}>
-                    {key === "id"
-                      ? entry.id
-                      : typeof entry[key] === "object"
-                      ? JSON.stringify(entry[key])
-                      : entry[key]}
+                    {key === "id" ? (
+                      entry.id
+                    ) : key === "reason" ? (
+                      expandedId === entry.id ? (
+                        <span>
+                          {entry[key]}
+                          <button onClick={() => setExpandedId(null)}>
+                            Show Less
+                          </button>
+                        </span>
+                      ) : (
+                        <span>
+                          {entry[key].length > 50
+                            ? entry[key].substring(0, 50) + "..."
+                            : entry[key]}
+                          {entry[key].length > 50 && (
+                            <button onClick={() => setExpandedId(entry.id)}>
+                              Show More
+                            </button>
+                          )}
+                        </span>
+                      )
+                    ) : typeof entry[key] === "object" ? (
+                      JSON.stringify(entry[key])
+                    ) : (
+                      entry[key]
+                    )}
                   </td>
                 ))}
                 <td>
@@ -95,7 +119,6 @@ const ReadDowntime = () => {
                   ) : (
                     <div>
                       <button onClick={() => handleEdit(entry.id)}>Edit</button>
-
                       <DeleteDowntime
                         onDelete={() => handleEntryDelete(entry.id)}
                       />
