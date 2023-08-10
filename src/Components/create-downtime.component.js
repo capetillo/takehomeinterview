@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 // importing utils functions
 import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
+import "./create-downtime.css"
 
 const InputField = ({ label, value, onChange }) => (
   <div>

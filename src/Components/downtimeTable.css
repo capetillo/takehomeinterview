@@ -2,17 +2,18 @@
     display: flex;
     justify-content: center;
     align-items: center; /* if you want it vertically centered as well */
-    height: 80vh; 
+    height: 60vh; 
 
 }
 td, th {
     text-align: center;
     vertical-align: middle; 
+    padding: 0.2em
 }
 .dt-table {
     max-width: 90%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 15px 0;
 }
 
 .dt-head {
