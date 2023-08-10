@@ -6,10 +6,16 @@ import React, { useState } from "react";
 // onSave: cb function to be called when save button is clicked so that data can be updated
 const EditDowntime = ({ id, initialReason, onSave }) => {
   const [editedReason, setEditedReason] = useState(initialReason);
-
+  // state to not exceed 255 characters
   const [charCount, setCharCount] = useState(initialReason.length);
+  // state to not be able to edit reason and leave it blank
+  const [error, setError] = useState("");
+
+
   // event handler that updates editedReason's  state
   const handleReasonChange = (e) => {
+    // rerendering state of error to an empty string because there's text now
+    setError("")
     // rerenders component to new value in the entry
     const value = e.target.value;
     setEditedReason(value);
@@ -17,7 +23,16 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
   };
 
   const handleSave = () => {
+    // checking for no reason or whitespace
+    if (!editedReason.trim().length) {
+      // updates state
+      setError("Please provide a reason")
+      // does nothing 
+      return
+    }
+    // cb function passed down as props to the component
     onSave(id, editedReason);
+
   };
 
   return (
@@ -30,6 +45,7 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
       />
       <p>{255 - charCount} characters remaining</p>
       <button onClick={handleSave}>Save</button>
+      {error && <p style={{color: 'red'}}>{error}</p>}
     </div>
   );
 };

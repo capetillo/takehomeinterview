@@ -4,12 +4,15 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 // importing css for datepicker to look like a calendar
 import "react-datepicker/dist/react-datepicker.css";
-// importing setData function to avoid using long repetitive functions since it's used more than once in the app
-import { setData, getData } from "../Utils/storage";
 // importing useNavigate to redirect
 import { useNavigate } from "react-router-dom";
 // importing package for uniqueid generator
 import { v4 as uuidv4 } from "uuid";
+// importing utils functions
+import { setData, getData } from "../Utils/storage";
+import { checkForOverlap } from "../Utils/overlapCheck";
+
+
 
 const CreateDownTime = () => {
   // creating a uniqueID for each downtime
@@ -28,8 +31,10 @@ const CreateDownTime = () => {
     id: _id,
   };
 
-  // for redirecting after submission
-  const navigate = useNavigate();
+
+ 
+
+
   // using useState hook to keep track of changing values without mutating object
   const [inputDowntime, setInputDowntime] = useState(defaultValue);
 
@@ -70,6 +75,9 @@ const CreateDownTime = () => {
     }));
   };
 
+
+  // for redirecting after submission
+  const navigate = useNavigate();
   // functionionality for button to assign values to keys of inputDowntime object, save da
   const handleSubmit = (e) => {
     e.preventDefault();
