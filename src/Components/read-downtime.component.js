@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 // importing utility function to avoid repetition
 import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
-// importing components
-import EditDowntime from "./edit-downtime.component";
-import DeleteDowntime from "./delete-downtime.component";
+// importing component
 import DowntimeTable from "./downtimeTable.component";
 
 const ReadDowntime = () => {
@@ -73,7 +71,6 @@ const ReadDowntime = () => {
       )
     : downtimeData;
 
-
   return (
     <div>
       <h1>Downtimes</h1>
@@ -86,84 +83,19 @@ const ReadDowntime = () => {
 
       {filteredData.length > 0 ? (
         <DowntimeTable
+          // passing down props to be able to handle edits, updates, and deletes
           data={filteredData}
           handleEdit={handleEdit}
           handleEntryDelete={handleEntryDelete}
+          expandedId={expandedId}
+          setExpandedId={setExpandedId}
+          editId={editId}
+          handleUpdateReason={handleUpdateReason} // pass it down here
         />
       ) : (
         <p>No matching downtime data available.</p>
       )}
-      {downtimeData.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              {Object.keys(downtimeData[0]).map((key) => (
-                <th key={key}>{key}</th>
-              ))}
-              <th>Edit Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            {downtimeData.map((entry, index) => (
-              <tr key={index}>
-                {Object.keys(entry).map((key) => (
-                  <td key={key}>
-                    {key === "id" ? (
-                      entry.id
-                    ) : key === "reason" ? (
-                      expandedId === entry.id ? (
-                        <span>
-                          {entry[key]}
-                          <button onClick={() => setExpandedId(null)}>
-                            Show Less
-                          </button>
-                        </span>
-                      ) : (
-                        <span>
-                          {entry[key].length > 50
-                            ? entry[key].substring(0, 50) + "..."
-                            : entry[key]}
-                          {entry[key].length > 50 && (
-                            <button onClick={() => setExpandedId(entry.id)}>
-                              Show More
-                            </button>
-                          )}
-                        </span>
-                      )
-                    ) : typeof entry[key] === "object" ? (
-                      JSON.stringify(entry[key])
-                    ) : (
-                      entry[key]
-                    )}
-                  </td>
-                ))}
-                <td>
-                  {editId === entry.id ? (
-                    <EditDowntime
-                      id={entry.id}
-                      initialReason={entry.reason}
-                      onSave={(id, updatedReason) =>
-                        handleUpdateReason(id, updatedReason)
-                      }
-                    />
-                  ) : (
-                    <div>
-                      <button onClick={() => handleEdit(entry.id)}>Edit</button>
-                      <DeleteDowntime
-                        onDelete={() => handleEntryDelete(entry.id)}
-                      />
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No downtime data available.</p>
-      )}
     </div>
   );
 };
-
 export default ReadDowntime;

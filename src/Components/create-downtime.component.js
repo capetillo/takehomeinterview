@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
 
+// basic input field
 const InputField = ({ label, value, onChange }) => (
   <div>
     <label htmlFor={label}>{label}</label>
@@ -25,6 +26,7 @@ const InputField = ({ label, value, onChange }) => (
   </div>
 );
 
+// date input with datepicker 
 const DateInputField = ({ label, value, onChange, handleDateInput }) => (
   <div>
     <label htmlFor={label}>{label}</label>
@@ -39,6 +41,7 @@ const DateInputField = ({ label, value, onChange, handleDateInput }) => (
   </div>
 );
 
+// textare input with character count
 const TextAreaField = ({ label, value, onChange }) => (
   <div>
     <label htmlFor={label}>Reason</label>
@@ -75,7 +78,7 @@ const CreateDownTime = () => {
   // initializing state to no error. Later usedd to create errors
   const [error, setError] = useState("");
 
-  // event handler to reuse key value pairs
+  // updating a given key in state
   const handleInputChange = (key, value) => {
     setInputDowntime((prevData) => ({
       // updating state but maintaining inputDowntime immutable
@@ -114,7 +117,7 @@ const CreateDownTime = () => {
 
   // for redirecting after submission
   const navigate = useNavigate();
-  // functionionality for button to assign values to keys of inputDowntime object, save da
+  // validating and storing the form data
   const handleSubmit = (e) => {
     e.preventDefault();
     // checking if any fields are empty
@@ -155,6 +158,7 @@ const CreateDownTime = () => {
       }
       return false;
     };
+
     if (
       doesDowntimeOverlap(
         inputDowntime.startDate,
@@ -164,7 +168,7 @@ const CreateDownTime = () => {
       )
     ) {
       setError(
-        "Error! There's already a telescope and site downtime for that interval of time"
+        "Error! There's already a downtime registered for that telescope and site"
       );
       return;
     } else {
