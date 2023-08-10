@@ -11,8 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 // importing utils functions
 import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
+import "./create-downtime.css"
 
-// basic input field
 const InputField = ({ label, value, onChange }) => (
   <div>
     <label htmlFor={label}>{label}</label>
@@ -26,7 +26,6 @@ const InputField = ({ label, value, onChange }) => (
   </div>
 );
 
-// date input with datepicker 
 const DateInputField = ({ label, value, onChange, handleDateInput }) => (
   <div>
     <label htmlFor={label}>{label}</label>
@@ -41,7 +40,6 @@ const DateInputField = ({ label, value, onChange, handleDateInput }) => (
   </div>
 );
 
-// textare input with character count
 const TextAreaField = ({ label, value, onChange }) => (
   <div>
     <label htmlFor={label}>Reason</label>
@@ -78,7 +76,7 @@ const CreateDownTime = () => {
   // initializing state to no error. Later usedd to create errors
   const [error, setError] = useState("");
 
-  // updating a given key in state
+  // event handler to reuse key value pairs
   const handleInputChange = (key, value) => {
     setInputDowntime((prevData) => ({
       // updating state but maintaining inputDowntime immutable
@@ -117,7 +115,7 @@ const CreateDownTime = () => {
 
   // for redirecting after submission
   const navigate = useNavigate();
-  // validating and storing the form data
+  // functionionality for button to assign values to keys of inputDowntime object, save da
   const handleSubmit = (e) => {
     e.preventDefault();
     // checking if any fields are empty
@@ -158,7 +156,6 @@ const CreateDownTime = () => {
       }
       return false;
     };
-
     if (
       doesDowntimeOverlap(
         inputDowntime.startDate,
@@ -168,7 +165,7 @@ const CreateDownTime = () => {
       )
     ) {
       setError(
-        "Error! There's already a downtime registered for that telescope and site"
+        "Error! There's already a telescope and site downtime for that interval of time"
       );
       return;
     } else {
@@ -204,7 +201,7 @@ const CreateDownTime = () => {
   ];
 
   return (
-    <div>
+    <div class="create-dt">
       <form onSubmit={handleSubmit}>
         {fieldsConfig.map((field) => {
           if (field.type === "text") {

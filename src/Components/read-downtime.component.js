@@ -4,6 +4,7 @@ import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
 // importing component
 import DowntimeTable from "./downtimeTable.component";
 import DowntimeTimeline from "./downtimeTimeline.component";
+import "./read-downtime.css"
 
 const ReadDowntime = () => {
   // using useState hook to keep track of changing values
@@ -74,8 +75,9 @@ const ReadDowntime = () => {
 
   return (
     <div>
-      <h1>Downtimes</h1>
+      <h1>DOWNTIMES</h1>
       <input
+      className="search-bar"
         type="text"
         placeholder="Search by telescope or site..."
         value={lookupKeyword}
@@ -96,7 +98,7 @@ const ReadDowntime = () => {
       ) : (
         <p>No matching downtime data available.</p>
       )}
-      {downtimeData.length > 0 && <DowntimeTimeline data={downtimeData} />}
+      <DowntimeTimeline data={downtimeData} />
     </div>
   );
 };

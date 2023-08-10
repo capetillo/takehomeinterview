@@ -3,6 +3,7 @@ import { Timeline } from "vis-timeline";
 import { DataSet } from "vis-data/peer/esm/vis-data";
 // import styles
 import "vis-timeline/styles/vis-timeline-graph2d.css";
+import "./downtimeTimeline.css"
 
 const DowntimeTimeline = ({ data }) => {
     // ref for the dom element where the timeline will be attached
@@ -40,7 +41,7 @@ const DowntimeTimeline = ({ data }) => {
   }, [data]);
 
   return (
-    <div ref={timelineRef} style={{ width: "100%", height: "400px" }}></div>
+    <div className="timeline" ref={timelineRef} style={{ width: "100%", height: "400px" }}></div>
   );
 };
 

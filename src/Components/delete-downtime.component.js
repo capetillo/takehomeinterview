@@ -1,4 +1,5 @@
 import React from "react";
+import "./delete-downtime.css"
 
 // onDelete: cb function to be called when delete button is clicked so that entry can be deleted
 const DeleteDowntime = ({ onDelete }) => {
@@ -8,7 +9,7 @@ const DeleteDowntime = ({ onDelete }) => {
 
   return (
     <div>
-      <button onClick={handleDelete}>Delete entry</button>
+      <button className="delete" onClick={handleDelete}>X</button>
     </div>
   );
 };

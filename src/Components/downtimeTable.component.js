@@ -1,7 +1,7 @@
 import React from "react";
-// importing components
 import EditDowntime from "./edit-downtime.component";
 import DeleteDowntime from "./delete-downtime.component";
+import "./downtimeTable.css";
 
 //rendering a table to display downtime data
 // passing down props
@@ -22,19 +22,18 @@ const DowntimeTable = ({
   editId,
 }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          {/* table headers according to their data keys */}
+    <div className="table-parent">
+    <table className="dt-table">
+      <thead className="dt-head">
+        <tr className="dt-tr">
           {Object.keys(data[0]).map((key) => (
             <th key={key}>{key}</th>
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody className="dt-tbody">
         {data.map((entry, index) => (
           <tr key={index}>
-            {/* data for each key in the entry */}
             {Object.keys(entry).map((key) => (
               <td key={key}>
                 {key === "id" ? (
@@ -44,18 +43,17 @@ const DowntimeTable = ({
                     {expandedId === entry.id ? (
                       <span>
                         {entry[key]}
-                        <button onClick={() => setExpandedId(null)}>
+                        <button className="button-as-link" onClick={() => setExpandedId(null)}>
                           Show Less
                         </button>
                       </span>
                     ) : (
                       <span>
-                        {/* if reason text is long, show more/less button is there */}
                         {entry[key].length > 50
                           ? entry[key].substring(0, 50) + "..."
                           : entry[key]}
                         {entry[key].length > 50 && (
-                          <button onClick={() => setExpandedId(entry.id)}>
+                          <button className="button-as-link" onClick={() => setExpandedId(entry.id)}>
                             Show More
                           </button>
                         )}
@@ -70,7 +68,7 @@ const DowntimeTable = ({
                         }
                       />
                     ) : (
-                      <button onClick={() => handleEdit(entry.id)}>Edit</button>
+                      <button className="edit" onClick={() => handleEdit(entry.id)}>Edit</button>
                     )}
                   </>
                 ) : typeof entry[key] === "object" ? (
@@ -87,6 +85,10 @@ const DowntimeTable = ({
         ))}
       </tbody>
     </table>
+    </div>
+
+  
   );
 };
+
 export default DowntimeTable;
