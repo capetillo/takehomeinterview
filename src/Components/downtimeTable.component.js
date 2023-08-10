@@ -3,9 +3,8 @@ import React from "react";
 import EditDowntime from "./edit-downtime.component";
 import DeleteDowntime from "./delete-downtime.component";
 
-
 //rendering a table to display downtime data
-// passing down props 
+// passing down props
 // data: array of downtime data objects to be displayed
 // handleEdit: triggers the edit mode for reason entry
 // handleEntryDelete: deletes an entire entry
@@ -20,7 +19,7 @@ const DowntimeTable = ({
   handleUpdateReason,
   expandedId,
   setExpandedId,
-  editId
+  editId,
 }) => {
   return (
     <table>
@@ -30,11 +29,9 @@ const DowntimeTable = ({
           {Object.keys(data[0]).map((key) => (
             <th key={key}>{key}</th>
           ))}
-          <th>Edit Reason</th>
         </tr>
       </thead>
       <tbody>
-        {/* iterating through the data and creating table rows */}
         {data.map((entry, index) => (
           <tr key={index}>
             {/* data for each key in the entry */}
@@ -43,26 +40,39 @@ const DowntimeTable = ({
                 {key === "id" ? (
                   entry.id
                 ) : key === "reason" ? (
-                  /* if reason text is long, show more/less button is there*/
-                  expandedId === entry.id ? (
-                    <span>
-                      {entry[key]}
-                      <button onClick={() => setExpandedId(null)}>
-                        Show Less
-                      </button>
-                    </span>
-                  ) : (
-                    <span>
-                      {entry[key].length > 50
-                        ? entry[key].substring(0, 50) + "..."
-                        : entry[key]}
-                      {entry[key].length > 50 && (
-                        <button onClick={() => setExpandedId(entry.id)}>
-                          Show More
+                  <>
+                    {expandedId === entry.id ? (
+                      <span>
+                        {entry[key]}
+                        <button onClick={() => setExpandedId(null)}>
+                          Show Less
                         </button>
-                      )}
-                    </span>
-                  )
+                      </span>
+                    ) : (
+                      <span>
+                        {/* if reason text is long, show more/less button is there */}
+                        {entry[key].length > 50
+                          ? entry[key].substring(0, 50) + "..."
+                          : entry[key]}
+                        {entry[key].length > 50 && (
+                          <button onClick={() => setExpandedId(entry.id)}>
+                            Show More
+                          </button>
+                        )}
+                      </span>
+                    )}
+                    {editId === entry.id ? (
+                      <EditDowntime
+                        id={entry.id}
+                        initialReason={entry.reason}
+                        onSave={(id, updatedReason) =>
+                          handleUpdateReason(id, updatedReason)
+                        }
+                      />
+                    ) : (
+                      <button onClick={() => handleEdit(entry.id)}>Edit</button>
+                    )}
+                  </>
                 ) : typeof entry[key] === "object" ? (
                   JSON.stringify(entry[key])
                 ) : (
@@ -71,23 +81,7 @@ const DowntimeTable = ({
               </td>
             ))}
             <td>
-              {/* EditDowntime component if the entry is being edited */}
-              {editId === entry.id ? (
-                <EditDowntime
-                  id={entry.id}
-                  initialReason={entry.reason}
-                  onSave={(id, updatedReason) =>
-                    handleUpdateReason(id, updatedReason)
-                  }
-                />
-              ) : (
-                <div>
-                  <button onClick={() => handleEdit(entry.id)}>Edit</button>
-                  <DeleteDowntime
-                    onDelete={() => handleEntryDelete(entry.id)}
-                  />
-                </div>
-              )}
+              <DeleteDowntime onDelete={() => handleEntryDelete(entry.id)} />
             </td>
           </tr>
         ))}
@@ -95,5 +89,4 @@ const DowntimeTable = ({
     </table>
   );
 };
-
 export default DowntimeTable;
