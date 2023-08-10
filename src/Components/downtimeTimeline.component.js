@@ -6,6 +6,7 @@ import 'vis-timeline/styles/vis-timeline-graph2d.css';
 
 
 const DowntimeTimeline = ({ data }) => {
+    console.log("this is data", data);
   const timelineRef = useRef();
 
   const generateContent = (entry) => {
@@ -31,7 +32,7 @@ const DowntimeTimeline = ({ data }) => {
         content: generateContent(entry),
         style: `background-color: ${randomColor}; color: #FFF;`
       });
-    });
+    }, [data]);
 
     const options = {
       rollingMode: {

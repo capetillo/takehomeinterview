@@ -96,7 +96,7 @@ const ReadDowntime = () => {
       ) : (
         <p>No matching downtime data available.</p>
       )}
-      <DowntimeTimeline data={downtimeData} />
+      {downtimeData.length > 0 && <DowntimeTimeline data={downtimeData} />}
     </div>
   );
 };
