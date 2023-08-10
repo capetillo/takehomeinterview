@@ -2,6 +2,7 @@
 
 // start and end refer to startDate and endDate's time, respectively and 1 and 2 refer to which interval it pertains to
  export const checkForOverlap = (start1, end1, start2, end2) => {
+    // converting strings to dates
     start1 = new Date(start1);
     end1 = new Date(end1);
     start2 = new Date(start2);
