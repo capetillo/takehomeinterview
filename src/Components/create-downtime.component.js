@@ -122,7 +122,7 @@ const CreateDownTime = () => {
         inputDowntime.site
       )
     ) {
-      setError("Error! Telescope and site overlap with time");
+      setError("Error! There's already a telescope and site downtime for that interval of time");
       return;
     } else {
       setError("");
@@ -171,7 +171,6 @@ const CreateDownTime = () => {
                   dateFormat="MM/dd/yyyy h:mm aa"
                   className="date-picker"
                 />
-                {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
             );
           } else if (key === "reason") {
@@ -203,6 +202,7 @@ const CreateDownTime = () => {
             );
           }
         })}
+        {error && <p style={{ color: "red" }}>{error}</p>}
         {/* rendering id */}
         <div>
           <label>Internal ID:</label>
