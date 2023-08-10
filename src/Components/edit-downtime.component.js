@@ -19,7 +19,7 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
 
   return (
     <div>
-      <input type="text" value={editedReason} onChange={handleReasonChange} />
+      <input type="text" value={editedReason} maxLength="255" onChange={handleReasonChange} />
       <button onClick={handleSave}>Save</button>
     </div>
   );
