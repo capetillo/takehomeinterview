@@ -4,7 +4,7 @@ import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
 // importing components
 import EditDowntime from "./edit-downtime.component";
 import DeleteDowntime from "./delete-downtime.component";
-import DowntimeTable from "./downtimeTable.component";
+import DowntimeTable from "./tempTable.component";
 
 const ReadDowntime = () => {
   // using useState hook to keep track of changing values
@@ -13,7 +13,7 @@ const ReadDowntime = () => {
   const [editId, setEditId] = useState(null);
   // state to expand reason. Initializing to null
   const [expandedId, setExpandedId] = useState(null);
-  // state to lookup by telescope or site
+  // state of keyword entry to be able to filter later
   const [lookupKeyword, setLookupKeyword] = useState("");
 
   // performing side effects (this is what the hook does)
@@ -26,14 +26,6 @@ const ReadDowntime = () => {
     // setting the state of downtimeData with the data retrieved from local storage
     setDowntimeData(savedData);
   }, []);
-
-  // filtering downtimeData array based on lookupKeyword
-  const filteredData = downtimeData.filter(
-    (entry) =>
-     // returning true if lookupKeyword matches and including entry in the filteredData
-      entry.telescope.toLowerCase().includes(lookupKeyword.toLowerCase()) ||
-      entry.site.toLowerCase().includes(lookupKeyword.toLowerCase())
-  );
 
   // handler function to edit reason based on id
   const handleEdit = (id) => {
@@ -73,18 +65,30 @@ const ReadDowntime = () => {
     setDowntimeData(updatedData);
   };
 
+  const filteredData = lookupKeyword
+    ? downtimeData.filter(
+        (entry) =>
+          entry.telescope.toLowerCase().includes(lookupKeyword.toLowerCase()) ||
+          entry.site.toLowerCase().includes(lookupKeyword.toLowerCase())
+      )
+    : downtimeData;
+
+
   return (
     <div>
       <h1>Downtimes</h1>
-      <input 
-        type="text" 
-        placeholder="Search by telescope or site..." 
-        value={lookupKeyword} 
-        onChange={(e) => setLookupKeyword(e.target.value)} 
+      <input
+        type="text"
+        placeholder="Search by telescope or site..."
+        value={lookupKeyword}
+        onChange={(e) => setLookupKeyword(e.target.value)}
       />
+
       {filteredData.length > 0 ? (
         <DowntimeTable
           data={filteredData}
+          handleEdit={handleEdit}
+          handleEntryDelete={handleEntryDelete}
         />
       ) : (
         <p>No matching downtime data available.</p>
