@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // passing three arguments to be able to edit and save (U of CRUD)
 // id: unique id of entry to be edited
 // initial reason: initial value of key 'reason' to be edited
-// onSave: cb function to be called when save button is clicked so that reason can be updated
+// onSave: cb function to be called when save button is clicked so that data can be updated
 const EditDowntime = ({ id, initialReason, onSave }) => {
 
   const [editedReason, setEditedReason] = useState(initialReason);
@@ -14,9 +14,7 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
     setEditedReason(e.target.value);
   };
 
-
   const handleSave = () => {
-    // calling onSave function passing id and editedReason as args
     onSave(id, editedReason);
   };
 

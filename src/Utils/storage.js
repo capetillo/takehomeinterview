@@ -1,14 +1,9 @@
-// exporting functions for reusability 
+// exporting functions for utility and reusability purposes
 
 export function setData(key, value) {
-    // fetching existing data or empty array if there's no data 
-    const existingData = getData(key) || []; 
-    // merging existing data with new value to avoid overriding existing data
-    const updatedData = [...existingData, value]; 
-    // posts data in localStorage and it only takes strings (C of CRUD)
-    localStorage.setItem(key, JSON.stringify(updatedData)); // Store updated data
+    // store updated data
+    localStorage.setItem(key, JSON.stringify(value));
 }
-
 
 
 export function getData(key) {
@@ -16,10 +11,4 @@ export function getData(key) {
    const sValue = localStorage.getItem(key)
    // parsing because sValue is an object 
    return JSON.parse(sValue); 
-}
-
-
-export function deleteData(key) {
-    // deleting data from local storage (D of CRUD)
-    localStorage.removeItem(key);
 }

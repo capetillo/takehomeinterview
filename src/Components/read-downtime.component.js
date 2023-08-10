@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // importing getData utility function to avoid using long repetitive functions
-import { getData, setData, deleteData } from '../Utils/storage';
+import { getData, setData } from '../Utils/storage';
 // importing EditDowntime to be able to edit Reason
 import EditDowntime from './edit-downtime.component';
-// importing DeleteDowntime to be able to delete Downtime entry
 import DeleteDowntime from './delete-downtime.component';
 
 const ReadDowntime = () => {
@@ -11,50 +10,39 @@ const ReadDowntime = () => {
     const [downtimeData, setDowntimeData] = useState([]);
     // initializing editId to null since no reason has been edited
     const [editId, setEditId] = useState(null);
-  
-    // using useEffect hook to update the dom and fetch data
-    useEffect(() => {
-        // using getData utility function 
-        const savedData =  getData('inputDowntime') || [];
-        // updating downtimeData state
-        setDowntimeData(savedData);
-        console.log("this is saved data!", savedData);
-        // empty array simulates behavior of componentDidMount
-    }, []);
 
+    useEffect(() => {
+        const savedData = getData('inputDowntime') || [];
+        console.log("Retrieved data from local storage:", savedData);
+        setDowntimeData(savedData);
+    }, []);
+      
 
     const handleEdit = (id) => {
-        // calling setEditId function and passing the id as an arg
         setEditId(id);
       };
 
 
-    
-    const handleUpdateReason = (id, updatedReason) => {
-    // mapping through downtimeData array to create new array
-    const updatedData = downtimeData.map((entry) => {
-        // checking to see if current entry id is the same as the provided id
-        if (entry.id === id) {
-        // creating new object with updated reason
-        return { ...entry, reason: updatedReason };
-        }
-        // if id doesn't match, the same entry will be returned
-        return entry;
-    });
-    // update downtime state to the new array with updated data
-    setDowntimeData(updatedData);
-    // resetting editId state to null
-    setEditId(null);
+      const handleUpdateReason = (id, updatedReason) => {
+        const currentData = getData('inputDowntime') || [];
+        const updatedData = currentData.map((entry) => {
+            if (entry.id === id) {
+                return { ...entry, reason: updatedReason };
+            }
+            return entry;
+        });
+        setData('inputDowntime', updatedData);
+        setDowntimeData(updatedData);
+        setEditId(null);
     };
-    
 
-    const handleDelete = (id) => {
-        const updatedDeletedData = downtimeData.filter((entry) => entry.id !== id);
-        setDowntimeData(updatedDeletedData);
-        setData('inputDowntime', updatedDeletedData);
-        deleteData(id);
-      };
 
+    const handleEntryDelete = (id) => {
+        const currentData = getData('inputDowntime') || [];
+        const updatedData = currentData.filter((entry) => entry.id !== id);
+        setData('inputDowntime', updatedData);
+        setDowntimeData(updatedData);
+    };
 
     return (
         <div>
@@ -70,35 +58,36 @@ const ReadDowntime = () => {
             </tr>
           </thead>
           <tbody>
-  {downtimeData.map((entry, index) => (
-    <tr key={index}>
-      {Object.keys(entry).map(key => (
-        <td key={key}>
-          {key === 'id' ? (
-            entry.id
-          ) : (
-            typeof entry[key] === 'object' ? JSON.stringify(entry[key]) : entry[key]
-          )}
-        </td>
-      ))}
-      <td>
-        {editId === entry.id ? (
+        {downtimeData.map((entry, index) => (
+        <tr key={index}>
+        {Object.keys(entry).map(key => (
+            <td key={key}>
+            {key === 'id' ? (
+                entry.id
+            ) : (
+                typeof entry[key] === 'object' ? JSON.stringify(entry[key]) : entry[key]
+            )}
+            </td>
+        ))}
+        <td>
+            {editId === entry.id ? (
 
-          <EditDowntime
-            id={entry.id}
-            initialReason={entry.reason}
-            onSave={handleUpdateReason}
-          />
+        <EditDowntime
+        id={entry.id}
+        initialReason={entry.reason}
+        onSave={(id, updatedReason) => handleUpdateReason(id, updatedReason)}
+        />
         ) : (
           <div>
             <button onClick={() => handleEdit(entry.id)}>Edit</button>
-            <DeleteDowntime id={entry.id} onDelete={handleDelete} />
-          </div>
-        )}
-      </td>
-    </tr>
-  ))}
-</tbody>
+
+            <DeleteDowntime onDelete={() => handleEntryDelete(entry.id)} />
+            </div>
+            )}
+        </td>
+        </tr>
+    ))}
+    </tbody>
 
         </table>
             ) : (
