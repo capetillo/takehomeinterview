@@ -5,7 +5,6 @@ import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
 import DowntimeTable from "./downtimeTable.component";
 import DowntimeTimeline from "./downtimeTimeline.component";
 
-
 const ReadDowntime = () => {
   // using useState hook to keep track of changing values
   const [downtimeData, setDowntimeData] = useState([]);

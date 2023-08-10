@@ -1,48 +1,47 @@
 import React, { useEffect, useRef } from 'react';
 import { Timeline } from 'vis-timeline';
 import { DataSet } from "vis-data/peer/esm/vis-data";
+// import styles
+import 'vis-timeline/styles/vis-timeline-graph2d.css'; 
 
 
 const DowntimeTimeline = ({ data }) => {
   const timelineRef = useRef();
 
+  const generateContent = (entry) => {
+    return `
+      <strong>Reason:</strong> ${entry.reason}<br/>
+      <strong>Site:</strong> ${entry.site}<br/>
+      <strong>Telescope:</strong> ${entry.telescope}<br/>
+      <strong>Start Date:</strong> ${entry.startDate}<br/>
+      <strong>End Date:</strong> ${entry.endDate}
+    `;
+};
+
+
   useEffect(() => {
     const items = new DataSet();
 
     data.forEach((entry) => {
+      const randomColor = `#${Math.floor(Math.random()*16777215).toString(16)}`; // Generates a random color
       items.add({
         id: entry.id,
         start: new Date(entry.startDate),
         end: new Date(entry.endDate),
-        content: `${entry.reason} (${entry.site}, ${entry.telescope})`,
+        content: generateContent(entry),
+        style: `background-color: ${randomColor}; color: #FFF;`
       });
     });
 
     const options = {
-
-            format: {
-                minorLabels: {
-                  second: 's',
-                  minute: 'H:mm',
-                  hour: 'H:mm',
-                  weekday: 'ddd D',
-                  day: 'D',
-                  month: 'MMM',
-                  year: 'YYYY'
-                },
-                majorLabels: {
-                  second: 'D MMMM H:mm',
-                  minute: 'ddd D MMMM',
-                  hour: 'ddd D MMMM',
-                  weekday: 'MMMM YYYY',
-                  day: 'MMMM YYYY',
-                  month: 'YYYY',
-                  year: 'YYYY'
-                }
-              }, 
-              zoomable: true,
-              moveable: true
-
+      rollingMode: {
+        follow: true,
+        offset: 0.5
+      },
+      start: new Date(),
+      end: new Date(new Date().getTime() + 1000 * 60 * 60 * 24), // one day in the future
+      verticalScroll: true,
+      zoomKey: 'ctrlKey'
     };
 
     new Timeline(timelineRef.current, items, options);
@@ -52,4 +51,3 @@ const DowntimeTimeline = ({ data }) => {
 };
 
 export default DowntimeTimeline;
-
