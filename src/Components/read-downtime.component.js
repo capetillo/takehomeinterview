@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
 // importing component
 import DowntimeTable from "./downtimeTable.component";
+import DowntimeTimeline from "./downtimeTimeline.component";
+
 
 const ReadDowntime = () => {
   // using useState hook to keep track of changing values
@@ -95,6 +97,7 @@ const ReadDowntime = () => {
       ) : (
         <p>No matching downtime data available.</p>
       )}
+      <DowntimeTimeline data={downtimeData} />
     </div>
   );
 };
