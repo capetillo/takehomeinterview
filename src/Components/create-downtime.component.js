@@ -12,6 +12,47 @@ import { v4 as uuidv4 } from "uuid";
 import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
 
+const InputField = ({ label, value, onChange }) => (
+  <div>
+    <label htmlFor={label}>{label}</label>
+    <input
+      type="text"
+      id={label}
+      name={label}
+      value={value}
+      onChange={(e) => onChange(label, e.target.value)}
+    />
+  </div>
+);
+
+const DateInputField = ({ label, value, onChange, handleDateInput }) => (
+  <div>
+    <label htmlFor={label}>{label}</label>
+    <DatePicker
+      selected={value}
+      onChange={(date) => handleDateInput(label, date)}
+      showTimeSelect
+      timeIntervals={1}
+      dateFormat="MM/dd/yyyy h:mm aa"
+      className="date-picker"
+    />
+  </div>
+);
+
+const TextAreaField = ({ label, value, onChange }) => (
+  <div>
+    <label htmlFor={label}>Reason</label>
+    <textarea
+      id={label}
+      name={label}
+      value={value}
+      onChange={(e) => onChange(label, e.target.value)}
+      maxLength={255}
+    />
+    <p>Characters remaining: {255 - value.length}</p>
+  </div>
+);
+
 const CreateDownTime = () => {
   // creating a uniqueID for each downtime
   const _id = uuidv4();
@@ -122,7 +163,9 @@ const CreateDownTime = () => {
         inputDowntime.site
       )
     ) {
-      setError("Error! There's already a telescope and site downtime for that interval of time");
+      setError(
+        "Error! There's already a telescope and site downtime for that interval of time"
+      );
       return;
     } else {
       setError("");
@@ -147,67 +190,56 @@ const CreateDownTime = () => {
     would be a better approach because it would be scalable, it would have consistent patterns for the rendering fields, 
     and the return statement would be more concise and easier to read.
      */
+
+  const fieldsConfig = [
+    { type: "text", label: "site" },
+    { type: "text", label: "telescope" },
+    { type: "date", label: "startDate" },
+    { type: "date", label: "endDate" },
+    { type: "textArea", label: "reason" },
+  ];
+
   return (
     <div>
-      {/* onSubmit, inputDowntime object is stored by using localStorage */}
       <form onSubmit={handleSubmit}>
-        {/* mapping through each key of inputDowntime object and creating an input field for each key */}
-        {Object.keys(inputDowntime).map((key) => {
-          // skipping rendering of id because it's rendered below in a way that makes more sense
-          if (key === "id") {
-            return null;
-          }
-          // if the key is startDate or endDate, render DatePicker
-          if (key === "startDate" || key === "endDate") {
+        {fieldsConfig.map((field) => {
+          if (field.type === "text") {
             return (
-              <div key={key}>
-                <label htmlFor={key}>{key}</label>
-                <DatePicker
-                  selected={inputDowntime[key]}
-                  onChange={(date) => handleDateInput(key, date)}
-                  showTimeSelect
-                  // time comes in intervals of 1 minute instead of 5 minutes (default)
-                  timeIntervals={1}
-                  dateFormat="MM/dd/yyyy h:mm aa"
-                  className="date-picker"
-                />
-              </div>
-            );
-          } else if (key === "reason") {
-            return (
-              <div key={key}>
-                <label htmlFor={key}>Reason</label>
-                <textarea
-                  id={key}
-                  name={key}
-                  value={inputDowntime[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                  maxLength={255}
-                />
-                <p>Characters remaining: {255 - inputDowntime[key].length}</p>
-              </div>
-            );
-          } else {
-            return (
-              <div key={key}>
-                <label htmlFor={key}>{key}</label>
-                <input
-                  type="text"
-                  id={key}
-                  name={key}
-                  value={inputDowntime[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                />
-              </div>
+              <InputField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                onChange={handleInputChange}
+              />
             );
           }
+          if (field.type === "date") {
+            return (
+              <DateInputField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                handleDateInput={handleDateInput}
+              />
+            );
+          }
+          if (field.type === "textArea") {
+            return (
+              <TextAreaField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                onChange={handleInputChange}
+              />
+            );
+          }
+          return null;
         })}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {/* rendering id */}
         <div>
           <label>Internal ID:</label>
           <span>{inputDowntime.id}</span>
         </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Submit</button>
       </form>
     </div>
