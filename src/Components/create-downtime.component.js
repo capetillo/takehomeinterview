@@ -12,8 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 import { setData, getData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
 
-
-
 const CreateDownTime = () => {
   // creating a uniqueID for each downtime
   const _id = uuidv4();
@@ -31,12 +29,10 @@ const CreateDownTime = () => {
     id: _id,
   };
 
-
- 
-
-
-  // using useState hook to keep track of changing values without mutating object
+  // keeping track of inputs and initializing state to defaultValue
   const [inputDowntime, setInputDowntime] = useState(defaultValue);
+  // initializing state to no error. Later usedd to create errors
+  const [error, setError] = useState("");
 
   // event handler to reuse key value pairs
   const handleInputChange = (key, value) => {
@@ -75,7 +71,6 @@ const CreateDownTime = () => {
     }));
   };
 
-
   // for redirecting after submission
   const navigate = useNavigate();
   // functionionality for button to assign values to keys of inputDowntime object, save da
@@ -90,15 +85,49 @@ const CreateDownTime = () => {
       "reason",
     ];
     // using some method to test if there is a null field in the inputDowntime obj
-    const isAnyFieldEmpty = requiredFields.some(
-      (field) => !inputDowntime[field]
-    );
-    if (isAnyFieldEmpty) {
+    const isFieldEmpty = requiredFields.some((field) => !inputDowntime[field]);
+    if (isFieldEmpty) {
       //temporary alert. will add a better solution
-      alert("Please fill out all required fields.");
+      setError("Please fill out all required fields.");
       return;
     }
-    // using imported function to setData (C of CRUD)
+    const doesDowntimeOverlap = (newStart, newEnd, telescope, site) => {
+      // fetching all downtimes for the given telescope and site
+      const storedDowntimes = getData("inputDowntime").filter(
+        (entry) =>
+          entry.telescope.toLowerCase() === telescope.toLowerCase() &&
+          entry.site.toLowerCase() === site.toLowerCase()
+      );
+      // checking for overlaps
+      for (let downtime of storedDowntimes) {
+        console.log("this is downtime in error", downtime);
+        if (
+          checkForOverlap(
+            newStart,
+            newEnd,
+            downtime.startDate,
+            downtime.endDate
+          )
+        ) {
+          return true;
+        }
+      }
+      return false;
+    };
+    if (
+      doesDowntimeOverlap(
+        inputDowntime.startDate,
+        inputDowntime.endDate,
+        inputDowntime.telescope,
+        inputDowntime.site
+      )
+    ) {
+      setError("Error! Telescope and site overlap with time");
+      return;
+    } else {
+      setError("");
+    }
+    // using imported function to setData
     const existingData = getData("inputDowntime") || [];
     const dataToSave = {
       ...inputDowntime,
@@ -108,8 +137,6 @@ const CreateDownTime = () => {
 
     existingData.push(dataToSave);
     setData("inputDowntime", existingData);
-
-    console.log("this is input downtime", inputDowntime);
     navigate("/read-downtime");
   };
 
@@ -144,6 +171,7 @@ const CreateDownTime = () => {
                   dateFormat="MM/dd/yyyy h:mm aa"
                   className="date-picker"
                 />
+                {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
             );
           } else if (key === "reason") {

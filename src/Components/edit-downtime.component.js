@@ -8,7 +8,7 @@ const EditDowntime = ({ id, initialReason, onSave }) => {
   const [editedReason, setEditedReason] = useState(initialReason);
   // state to not exceed 255 characters
   const [charCount, setCharCount] = useState(initialReason.length);
-  // state to not be able to edit reason and leave it blank
+  // initializing state to no error. Later usedd to create error if reason is left blank
   const [error, setError] = useState("");
 
 
