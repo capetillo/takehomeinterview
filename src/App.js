@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import CreateDowntime from "./Components/create-downtime.component";
 import ReadDowntime from "./Components/read-downtime.component";
 
+
 function App() {
   return (
     <Router>
@@ -10,7 +11,7 @@ function App() {
         <nav>
           <ul className="nav-ul">
             <li>
-              <Link to="/">Read Downtime</Link>
+              <Link to="/">Home</Link>
             </li>
             <li>
               <Link to="/create-downtime">Create Downtime</Link>
@@ -18,7 +19,7 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/read-downtime" element={<ReadDowntime />} />
+          <Route path="/" element={<ReadDowntime />} />
           <Route path="/create-downtime" element={<CreateDowntime />} />
         </Routes>
       </div>

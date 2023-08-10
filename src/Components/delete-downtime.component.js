@@ -8,7 +8,7 @@ const DeleteDowntime = ({ onDelete }) => {
 
   return (
     <div>
-      <button onClick={handleDelete}>Delete</button>
+      <button onClick={handleDelete}>Delete entry</button>
     </div>
   );
 };

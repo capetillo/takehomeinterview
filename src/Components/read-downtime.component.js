@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 // importing utility function to avoid repetition
-import { getData, setData } from "../Utils/storage";
-// importing components
-import EditDowntime from "./edit-downtime.component";
-import DeleteDowntime from "./delete-downtime.component";
+import { retrieveDowntimeData, storeDowntimeData } from "../Utils/storage";
+// importing component
+import DowntimeTable from "./downtimeTable.component";
 
 const ReadDowntime = () => {
   // using useState hook to keep track of changing values
@@ -12,12 +11,16 @@ const ReadDowntime = () => {
   const [editId, setEditId] = useState(null);
   // state to expand reason. Initializing to null
   const [expandedId, setExpandedId] = useState(null);
+  // state of keyword entry to be able to filter later
+  const [lookupKeyword, setLookupKeyword] = useState("");
 
   // performing side effects (this is what the hook does)
   useEffect(() => {
     // fetching data from local storage
-    const savedData = getData("inputDowntime") || [];
+    const savedData = retrieveDowntimeData("inputDowntime") || [];
     console.log("Retrieved data from local storage:", savedData);
+    // converting date strings into Dates and sorting it in descending order
+    savedData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     // setting the state of downtimeData with the data retrieved from local storage
     setDowntimeData(savedData);
   }, []);
@@ -31,7 +34,7 @@ const ReadDowntime = () => {
   // handler function to update specific reason based on id
   const handleUpdateReason = (id, updatedReason) => {
     // fetching current data
-    const currentData = getData("inputDowntime") || [];
+    const currentData = retrieveDowntimeData("inputDowntime") || [];
     // updating the array by mapping
     const updatedData = currentData.map((entry) => {
       if (entry.id === id) {
@@ -41,7 +44,7 @@ const ReadDowntime = () => {
       } else return entry;
     });
     // saving updated data
-    setData("inputDowntime", updatedData);
+    storeDowntimeData("inputDowntime", updatedData);
     // updating state so UI rerenders
     setDowntimeData(updatedData);
     // resetting the id to null so that the entry is not being edited anymore
@@ -51,89 +54,48 @@ const ReadDowntime = () => {
   // deleting specific entry based on id
   const handleEntryDelete = (id) => {
     // fetching current data
-    const currentData = getData("inputDowntime") || [];
+    const currentData = retrieveDowntimeData("inputDowntime") || [];
     // filtering out the entry based on id
     const updatedData = currentData.filter((entry) => entry.id !== id);
     // saving the filtered data
-    setData("inputDowntime", updatedData);
+    storeDowntimeData("inputDowntime", updatedData);
     // updating the state so UI rerenders
     setDowntimeData(updatedData);
   };
 
+  const filteredData = lookupKeyword
+    ? downtimeData.filter(
+        (entry) =>
+          entry.telescope.toLowerCase().includes(lookupKeyword.toLowerCase()) ||
+          entry.site.toLowerCase().includes(lookupKeyword.toLowerCase())
+      )
+    : downtimeData;
+
   return (
     <div>
       <h1>Downtimes</h1>
-      {downtimeData.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              {Object.keys(downtimeData[0]).map((key) => (
-                <th key={key}>{key}</th>
-              ))}
-              <th>Edit Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            {downtimeData.map((entry, index) => (
-              <tr key={index}>
-                {Object.keys(entry).map((key) => (
-                  <td key={key}>
-                    {key === "id" ? (
-                      entry.id
-                    ) : key === "reason" ? (
-                      expandedId === entry.id ? (
-                        <span>
-                          {entry[key]}
-                          <button onClick={() => setExpandedId(null)}>
-                            Show Less
-                          </button>
-                        </span>
-                      ) : (
-                        <span>
-                          {entry[key].length > 50
-                            ? entry[key].substring(0, 50) + "..."
-                            : entry[key]}
-                          {entry[key].length > 50 && (
-                            <button onClick={() => setExpandedId(entry.id)}>
-                              Show More
-                            </button>
-                          )}
-                        </span>
-                      )
-                    ) : typeof entry[key] === "object" ? (
-                      JSON.stringify(entry[key])
-                    ) : (
-                      entry[key]
-                    )}
-                  </td>
-                ))}
-                <td>
-                  {editId === entry.id ? (
-                    <EditDowntime
-                      id={entry.id}
-                      initialReason={entry.reason}
-                      onSave={(id, updatedReason) =>
-                        handleUpdateReason(id, updatedReason)
-                      }
-                    />
-                  ) : (
-                    <div>
-                      <button onClick={() => handleEdit(entry.id)}>Edit</button>
-                      <DeleteDowntime
-                        onDelete={() => handleEntryDelete(entry.id)}
-                      />
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <input
+        type="text"
+        placeholder="Search by telescope or site..."
+        value={lookupKeyword}
+        onChange={(e) => setLookupKeyword(e.target.value)}
+      />
+
+      {filteredData.length > 0 ? (
+        <DowntimeTable
+          // passing down props to be able to handle edits, updates, and deletes
+          data={filteredData}
+          handleEdit={handleEdit}
+          handleEntryDelete={handleEntryDelete}
+          expandedId={expandedId}
+          setExpandedId={setExpandedId}
+          editId={editId}
+          handleUpdateReason={handleUpdateReason} // pass it down here
+        />
       ) : (
-        <p>No downtime data available.</p>
+        <p>No matching downtime data available.</p>
       )}
     </div>
   );
 };
-
 export default ReadDowntime;

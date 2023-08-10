@@ -9,8 +9,52 @@ import { useNavigate } from "react-router-dom";
 // importing package for uniqueid generator
 import { v4 as uuidv4 } from "uuid";
 // importing utils functions
-import { setData, getData } from "../Utils/storage";
+import { storeDowntimeData, retrieveDowntimeData } from "../Utils/storage";
 import { checkForOverlap } from "../Utils/overlapCheck";
+
+// basic input field
+const InputField = ({ label, value, onChange }) => (
+  <div>
+    <label htmlFor={label}>{label}</label>
+    <input
+      type="text"
+      id={label}
+      name={label}
+      value={value}
+      onChange={(e) => onChange(label, e.target.value)}
+    />
+  </div>
+);
+
+// date input with datepicker 
+const DateInputField = ({ label, value, onChange, handleDateInput }) => (
+  <div>
+    <label htmlFor={label}>{label}</label>
+    <DatePicker
+      selected={value}
+      onChange={(date) => handleDateInput(label, date)}
+      showTimeSelect
+      timeIntervals={1}
+      dateFormat="MM/dd/yyyy h:mm aa"
+      className="date-picker"
+    />
+  </div>
+);
+
+// textare input with character count
+const TextAreaField = ({ label, value, onChange }) => (
+  <div>
+    <label htmlFor={label}>Reason</label>
+    <textarea
+      id={label}
+      name={label}
+      value={value}
+      onChange={(e) => onChange(label, e.target.value)}
+      maxLength={255}
+    />
+    <p>Characters remaining: {255 - value.length}</p>
+  </div>
+);
 
 const CreateDownTime = () => {
   // creating a uniqueID for each downtime
@@ -34,7 +78,7 @@ const CreateDownTime = () => {
   // initializing state to no error. Later usedd to create errors
   const [error, setError] = useState("");
 
-  // event handler to reuse key value pairs
+  // updating a given key in state
   const handleInputChange = (key, value) => {
     setInputDowntime((prevData) => ({
       // updating state but maintaining inputDowntime immutable
@@ -73,7 +117,7 @@ const CreateDownTime = () => {
 
   // for redirecting after submission
   const navigate = useNavigate();
-  // functionionality for button to assign values to keys of inputDowntime object, save da
+  // validating and storing the form data
   const handleSubmit = (e) => {
     e.preventDefault();
     // checking if any fields are empty
@@ -93,7 +137,7 @@ const CreateDownTime = () => {
     }
     const doesDowntimeOverlap = (newStart, newEnd, telescope, site) => {
       // fetching all downtimes for the given telescope and site
-      const storedDowntimes = getData("inputDowntime").filter(
+      const storedDowntimes = retrieveDowntimeData("inputDowntime").filter(
         (entry) =>
           entry.telescope.toLowerCase() === telescope.toLowerCase() &&
           entry.site.toLowerCase() === site.toLowerCase()
@@ -114,6 +158,7 @@ const CreateDownTime = () => {
       }
       return false;
     };
+
     if (
       doesDowntimeOverlap(
         inputDowntime.startDate,
@@ -122,13 +167,15 @@ const CreateDownTime = () => {
         inputDowntime.site
       )
     ) {
-      setError("Error! Telescope and site overlap with time");
+      setError(
+        "Error! There's already a downtime registered for that telescope and site"
+      );
       return;
     } else {
       setError("");
     }
-    // using imported function to setData
-    const existingData = getData("inputDowntime") || [];
+    // using imported function to storeDowntimeData
+    const existingData = retrieveDowntimeData("inputDowntime") || [];
     const dataToSave = {
       ...inputDowntime,
       startDate: inputDowntime.startDate.toISOString(),
@@ -136,8 +183,8 @@ const CreateDownTime = () => {
     };
 
     existingData.push(dataToSave);
-    setData("inputDowntime", existingData);
-    navigate("/read-downtime");
+    storeDowntimeData("inputDowntime", existingData);
+    navigate("/");
   };
 
   /* for the return statement, I'm choosing to use individual conditional rendering because this project is a simple form
@@ -147,67 +194,56 @@ const CreateDownTime = () => {
     would be a better approach because it would be scalable, it would have consistent patterns for the rendering fields, 
     and the return statement would be more concise and easier to read.
      */
+
+  const fieldsConfig = [
+    { type: "text", label: "site" },
+    { type: "text", label: "telescope" },
+    { type: "date", label: "startDate" },
+    { type: "date", label: "endDate" },
+    { type: "textArea", label: "reason" },
+  ];
+
   return (
     <div>
-      {/* onSubmit, inputDowntime object is stored by using localStorage */}
       <form onSubmit={handleSubmit}>
-        {/* mapping through each key of inputDowntime object and creating an input field for each key */}
-        {Object.keys(inputDowntime).map((key) => {
-          // skipping rendering of id because it's rendered below in a way that makes more sense
-          if (key === "id") {
-            return null;
-          }
-          // if the key is startDate or endDate, render DatePicker
-          if (key === "startDate" || key === "endDate") {
+        {fieldsConfig.map((field) => {
+          if (field.type === "text") {
             return (
-              <div key={key}>
-                <label htmlFor={key}>{key}</label>
-                <DatePicker
-                  selected={inputDowntime[key]}
-                  onChange={(date) => handleDateInput(key, date)}
-                  showTimeSelect
-                  // time comes in intervals of 1 minute instead of 5 minutes (default)
-                  timeIntervals={1}
-                  dateFormat="MM/dd/yyyy h:mm aa"
-                  className="date-picker"
-                />
-                {error && <p style={{ color: "red" }}>{error}</p>}
-              </div>
-            );
-          } else if (key === "reason") {
-            return (
-              <div key={key}>
-                <label htmlFor={key}>Reason</label>
-                <textarea
-                  id={key}
-                  name={key}
-                  value={inputDowntime[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                  maxLength={255}
-                />
-                <p>Characters remaining: {255 - inputDowntime[key].length}</p>
-              </div>
-            );
-          } else {
-            return (
-              <div key={key}>
-                <label htmlFor={key}>{key}</label>
-                <input
-                  type="text"
-                  id={key}
-                  name={key}
-                  value={inputDowntime[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                />
-              </div>
+              <InputField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                onChange={handleInputChange}
+              />
             );
           }
+          if (field.type === "date") {
+            return (
+              <DateInputField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                handleDateInput={handleDateInput}
+              />
+            );
+          }
+          if (field.type === "textArea") {
+            return (
+              <TextAreaField
+                key={field.label}
+                label={field.label}
+                value={inputDowntime[field.label]}
+                onChange={handleInputChange}
+              />
+            );
+          }
+          return null;
         })}
-        {/* rendering id */}
         <div>
           <label>Internal ID:</label>
           <span>{inputDowntime.id}</span>
         </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <button type="submit">Submit</button>
       </form>
     </div>

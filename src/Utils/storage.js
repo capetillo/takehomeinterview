@@ -1,11 +1,11 @@
 // exporting functions for utility and reusability purposes
 
-export function setData(key, value) {
+export function storeDowntimeData(key, value) {
   // store updated data
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function getData(key) {
+export function retrieveDowntimeData(key) {
   // getting data from localStorage (R of CRUD)
   const sValue = localStorage.getItem(key);
   // parsing because sValue is an object
