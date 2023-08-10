@@ -1,15 +1,14 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import CreateDowntime from './Components/create-downtime.component';
-import ReadDowntime from './Components/read-downtime.component';
-
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import CreateDowntime from "./Components/create-downtime.component";
+import ReadDowntime from "./Components/read-downtime.component";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <nav>
-          <ul>
+          <ul className="nav-ul">
             <li>
               <Link to="/">Read Downtime</Link>
             </li>
@@ -24,8 +23,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-
-  )
+  );
 }
 
 export default App;
