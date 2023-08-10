@@ -1,0 +1,21 @@
+body {
+  font-family: 'Spline Sans Mono', monospace;
+}
+
+
+.nav-ul {
+  list-style-type: none;
+  display: inline-block;
+  
+}
+ul {
+  display: inline-block;
+  padding: 3em 0.7em;
+  text-decoration: none;
+}
+li {
+  display: inline-block;
+  padding: 1.5em;
+
+  text-decoration: none;
+}

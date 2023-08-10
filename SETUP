@@ -1,0 +1,17 @@
+
+# Telescope Downtime Tracker - Setup
+
+This document provides a step-by-step guide to setting up the Telescope Downtime Tracker application on your local machine.
+
+## Prerequisites
+
+- Node.js >= 14 and npm installed on your machine
+
+## Setup Instructions
+
+- git clone https://github.com/LCOGT/takehomeinterview.git
+- cd nameofyourrepo
+- npx create-react-app
+- npm install
+- npm i uuidv4 react-datepicker vis-timeline vis-data react-router-dom
+
