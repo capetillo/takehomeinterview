@@ -2,6 +2,6 @@ Make sure you have Node >= 14. If you dont, here's how to install node.js and np
 https://radixweb.com/blog/installing-npm-and-nodejs-on-windows-and-mac
 `npx create-react-app lco project`
 `npm start`
-`npm i react-bootstrap@next bootstrap@5.1.0 react-router-dom react-datepicker uuid`
+`npm i react-bootstrap@next bootstrap@5.1.0 react-router-dom react-datepicker uuid vis-timeline vis-data`
 If you see "6 high severity vulnerabilities" you can go ahead and ignore them
 https://overreacted.io/npm-audit-broken-by-design/ (written by Dan Abramav, creator of Create React App)
