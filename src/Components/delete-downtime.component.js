@@ -1,11 +1,8 @@
-import React from 'react';
-
+import React from "react";
 
 // onDelete: cb function to be called when delete button is clicked so that entry can be deleted
 const DeleteDowntime = ({ onDelete }) => {
-
   const handleDelete = () => {
-
     onDelete();
   };
 
