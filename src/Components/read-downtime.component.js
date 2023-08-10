@@ -18,6 +18,8 @@ const ReadDowntime = () => {
     // fetching data from local storage
     const savedData = retrieveDowntimeData("inputDowntime") || [];
     console.log("Retrieved data from local storage:", savedData);
+    // converting date strings into Dates and sorting it in descending order
+    savedData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     // setting the state of downtimeData with the data retrieved from local storage
     setDowntimeData(savedData);
   }, []);

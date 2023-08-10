@@ -180,7 +180,7 @@ const CreateDownTime = () => {
 
     existingData.push(dataToSave);
     storeDowntimeData("inputDowntime", existingData);
-    navigate("/read-downtime");
+    navigate("/");
   };
 
   /* for the return statement, I'm choosing to use individual conditional rendering because this project is a simple form
